@@ -103,7 +103,7 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The cURL-function takes as an argument a direct link to the stream
+     * The extractUsingCurl-function takes as an argument a direct link to the stream
      * of the online radio station and sends a cURL request to the stream
      * server. As a result, the function returns information about the song
      * in the following format "artist name and song name".
@@ -163,7 +163,7 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The FGC-function takes as an argument a direct link to an online
+     * The extractUsingStream-function takes as an argument a direct link to an online
      * radio station stream and opens the stream using the set HTTP headers.
      * As a result, the function returns information about the song
      * in the following format "artist name and song name".
@@ -213,7 +213,7 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The socket-function takes as an argument a direct link to the stream
+     * The extractUsingSocket-function takes as an argument a direct link to the stream
      * of the online radio station and sends an HTTP request to the stream
      * server. As a result, the function returns information about the song
      * in the following format "artist name and song name".
