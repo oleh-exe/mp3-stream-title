@@ -43,9 +43,11 @@ final class StreamRequestFactory
         $host = $endpoint->getHost();
         $port = $endpoint->getPort();
 
+        // Add port if it's not the default port for the scheme
         if ($port !== 80 && $port !== 443) {
             $host .= ':' . $port;
         }
+
         // immutable chain
         $headers = $headers
             ->with('Host', $host)
