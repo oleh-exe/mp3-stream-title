@@ -23,7 +23,9 @@ use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClientConfig;
-use Mp3StreamTitle\Infrastructure\Http\HttpClient;
+use Mp3StreamTitle\Infrastructure\Http\FopenHttpClient;
+use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
+use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
 use Mp3StreamTitle\Infrastructure\Http\MetadataExtractor;
@@ -31,7 +33,7 @@ use Mp3StreamTitle\Infrastructure\Http\OffsetResolver;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamRequestFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnection;
 use Mp3StreamTitle\Infrastructure\Http\StreamConnection;
-use Mp3StreamTitle\Infrastructure\Http\StreamReader;
+use Mp3StreamTitle\Infrastructure\Http\SocketStreamReader;
 use Mp3StreamTitle\Infrastructure\Metadata\StreamTitleExtractor;
 use RuntimeException;
 use Throwable;
@@ -177,27 +179,46 @@ final class Mp3StreamTitle
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
-        /*
-        $streamRequest = new StreamRequestFactory();
-        $httpRequest = $streamRequest->create(
-            $endpoint,
-            $this->config
-        );
-
-        $streamConnection = new StreamConnection(
+        $stream = new StreamConnection(
             $endpoint->getScheme(),
             $endpoint->getHost(),
             $endpoint->getPort(),
             $endpoint->getRequestTarget(),
             30
         );
+        $streamRequest = new StreamRequestFactory();
+        $httpClient = new FopenHttpClient($stream);
 
-        $streamConnection->open($httpRequest);
-        */
+        $httpRequest = $streamRequest->create(
+            $endpoint,
+            $this->config
+        );
 
+        $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $streamReader = new FopenStreamReader();
 
+        try {
+            $stream->open($httpRequest);
 
+            $httpResponse = $httpClient->read();
+            $initialBuffer = $httpResponse->body;
+            // Find out from which byte the metadata will begin
+            $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
+            $targetLength = $offset + 1 + $this->config->metaMaxLength;
+            $safetyMargin = 8192;
+            $maxAllowed = $targetLength + $safetyMargin;
+            $bodyBuffer = $streamReader->read($stream, $initialBuffer, $targetLength, $maxAllowed);
+        } finally {
+            $stream->close();
+        }
 
+        $metadataExtractor = new MetadataExtractor();
+        $metadata = $metadataExtractor->extract($bodyBuffer, $offset);
+
+        $streamTitleExtractor = new StreamTitleExtractor();
+        return $streamTitleExtractor->extract($metadata);
+
+        /*
         $offsetResolver = new OffsetResolver();
         // Find out from which byte the metadata will begin
         $offset = $offsetResolver->resolve($endpoint->getUrl(), $this->config);
@@ -233,6 +254,7 @@ final class Mp3StreamTitle
 
         $streamTitleExtractor = new StreamTitleExtractor();
         return $streamTitleExtractor->extract($metadata);
+        */
     }
 
     /**
@@ -258,7 +280,7 @@ final class Mp3StreamTitle
             30
         );
         $streamRequest = new StreamRequestFactory();
-        $httpClient = new HttpClient($socket);
+        $httpClient = new SocketHttpClient($socket);
 
         $httpRequest = $streamRequest->create(
             $endpoint,
@@ -266,7 +288,7 @@ final class Mp3StreamTitle
         );
 
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
-        $streamReader = new StreamReader();
+        $streamReader = new SocketStreamReader();
 
         try {
             $socket->open();
