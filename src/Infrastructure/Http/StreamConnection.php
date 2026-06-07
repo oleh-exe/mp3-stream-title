@@ -22,7 +22,6 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 use InvalidArgumentException;
 use LogicException;
 use Mp3StreamTitle\Domain\ValueObject\Scheme;
-use Mp3StreamTitle\Domain\ValueObject\Transport;
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
 use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequest;
@@ -34,6 +33,11 @@ final class StreamConnection
      * @var resource|null
      */
     private $fp = null;
+
+    /**
+     * @var array|null $httpResponseHeader
+     */
+    private ?array $httpResponseHeader;
 
     /**
      * The current state of the connection.
@@ -107,7 +111,6 @@ final class StreamConnection
                 'method' => $request->method()->value,
                 'timeout' => $this->timeout,
                 'header' => $headersSerializer->toString($request->headers()),
-                //'header'  => "User-Agent: MyApp\r\n",
             ],
         ]);
 
@@ -138,49 +141,17 @@ final class StreamConnection
             }
 
             $this->fp = $fp;
+            $this->httpResponseHeader = $http_response_header;
             $this->state = ConnectionState::CONNECTED;
         } catch (Throwable $e) {
             $this->fail($e);
         }
     }
 
-    /*
-    public function write(string $data): void
-    {
-        $this->assertConnected();
-
-        $this->state = ConnectionState::WRITING;
-
-        try {
-            $length = strlen($data);
-            $written = 0;
-
-            while ($written < $length) {
-                $chunk = substr($data, $written);
-                $chunkLength = strlen($chunk);
-
-                $bytes = fwrite($this->fp, $chunk);
-
-                if ($bytes === false || $bytes === 0) {
-                    throw new StreamConnectionException(
-                        sprintf(
-                            'Socket write failed (attempted %d bytes)',
-                            $chunkLength
-                        )
-                    );
-                }
-
-                $written += $bytes;
-            }
-
-            $this->state = ConnectionState::CONNECTED;
-        } catch (Throwable $e) {
-            $this->fail($e);
-        }
-    }
-    */
-
-    /*
+    /**
+     * @return string
+     * @throws Throwable
+     */
     public function read(): string
     {
         $this->assertConnected();
@@ -224,9 +195,10 @@ final class StreamConnection
             $this->fail($e);
         }
     }
-    */
 
-    /*
+    /**
+     * @return void
+     */
     public function close(): void
     {
         if (is_resource($this->fp)) {
@@ -239,9 +211,15 @@ final class StreamConnection
             $this->state = ConnectionState::CLOSED;
         }
     }
-    */
 
-    /*
+    public function httpResponseHeader(): ?array
+    {
+        return $this->httpResponseHeader;
+    }
+
+    /**
+     * @return void
+     */
     private function assertConnected(): void
     {
         if ($this->state !== ConnectionState::CONNECTED) {
@@ -259,16 +237,10 @@ final class StreamConnection
             );
         }
     }
-    */
 
     /**
-     * Handles a critical failure in the connection by closing the resource, clearing
-     * the internal state, and throwing the provided exception.
-     *
-     * @param Throwable $e The exception to be thrown indicating the failure.
-     *
-     * @return never This method does not return a value as it always throws an exception.
-     *
+     * @param Throwable $e
+     * @return never
      * @throws Throwable
      */
     private function fail(Throwable $e): never
