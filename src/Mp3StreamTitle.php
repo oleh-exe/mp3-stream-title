@@ -30,6 +30,7 @@ use Mp3StreamTitle\Infrastructure\Http\MetadataExtractor;
 use Mp3StreamTitle\Infrastructure\Http\OffsetResolver;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamRequestFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnection;
+use Mp3StreamTitle\Infrastructure\Http\StreamConnection;
 use Mp3StreamTitle\Infrastructure\Http\StreamReader;
 use Mp3StreamTitle\Infrastructure\Metadata\StreamTitleExtractor;
 use RuntimeException;
@@ -170,10 +171,32 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl
      * @return string|int
+     * @throws Throwable
      */
     private function extractUsingStream(string $streamingUrl): string|int
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
+
+        /*
+        $streamRequest = new StreamRequestFactory();
+        $httpRequest = $streamRequest->create(
+            $endpoint,
+            $this->config
+        );
+
+        $streamConnection = new StreamConnection(
+            $endpoint->getScheme(),
+            $endpoint->getHost(),
+            $endpoint->getPort(),
+            $endpoint->getRequestTarget(),
+            30
+        );
+
+        $streamConnection->open($httpRequest);
+        */
+
+
+
 
         $offsetResolver = new OffsetResolver();
         // Find out from which byte the metadata will begin
