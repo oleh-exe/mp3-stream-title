@@ -24,7 +24,7 @@ use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequest;
 use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequestSerializer;
 use Throwable;
 
-final class HttpClient
+final class SocketHttpClient
 {
     /**
      * @var SocketConnection
