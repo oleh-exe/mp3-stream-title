@@ -25,6 +25,7 @@ use Mp3StreamTitle\Domain\ValueObject\Scheme;
 use Mp3StreamTitle\Domain\ValueObject\Transport;
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
+use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequest;
 use Throwable;
 
 final class StreamConnection
@@ -42,14 +43,11 @@ final class StreamConnection
     private ConnectionState $state = ConnectionState::INITIAL;
 
     /**
-     * @param string $host The hostname to connect to.
-     * @param int $port The port number to connect on.
-     * @param Transport $transport The transport mechanism to be used.
-     * @param int $timeout The connection timeout in seconds; must be greater than 0.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException If the timeout is less than or equal to 0.
+     * @param Scheme $scheme
+     * @param string $host
+     * @param int $port
+     * @param string $target
+     * @param int $timeout
      */
     public function __construct(
         private readonly Scheme $scheme,
@@ -66,18 +64,11 @@ final class StreamConnection
     }
 
     /**
-     * Opens a connection to the specified remote address using the defined
-     * transport, host, and port. Handles connection errors and sets the
-     * connection state appropriately.
-     *
+     * @param HttpRequest $request
      * @return void
-     *
-     * @throws LogicException If the connection cannot be opened from the current state
-     *                        or if it has previously failed and cannot be reused.
-     * @throws StreamConnectionException|Throwable If the connection fails, or if stream settings
-     *                                    (blocking mode or timeout) cannot be configured.
+     * @throws Throwable
      */
-    public function open(): void
+    public function open(HttpRequest $request): void
     {
         if ($this->state === ConnectionState::ERROR) {
             throw new LogicException(
@@ -109,7 +100,18 @@ final class StreamConnection
 
         error_clear_last();
 
-        $fp = fopen($remoteAddress, 'r');
+        $headersSerializer = new HttpHeadersSerializer();
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => $request->method()->value,
+                'timeout' => $this->timeout,
+                'header' => $headersSerializer->toString($request->headers()),
+                //'header'  => "User-Agent: MyApp\r\n",
+            ],
+        ]);
+
+        $fp = fopen($remoteAddress, 'r', false, $context);
 
         if ($fp === false) {
             $error = error_get_last();
@@ -142,16 +144,6 @@ final class StreamConnection
         }
     }
 
-    /**
-     * Writes the given data to the socket connection.
-     *
-     * @param string $data The data to be written to the connection.
-     *
-     * @return void
-     *
-     * @throws StreamConnectionException If writing to the socket fails.
-     * @throws Throwable If an unexpected error occurs during the write operation.
-     */
     /*
     public function write(string $data): void
     {
@@ -188,14 +180,6 @@ final class StreamConnection
     }
     */
 
-    /**
-     * Reads data from the socket in chunks of a fixed length.
-     *
-     * @return string The data read from the socket.
-     *
-     * @throws StreamConnectionException If the read operation fails due to errors, timeout, EOF, or unexpected conditions.
-     * @throws Throwable If any other unexpected exception occurs during the operation.
-     */
     /*
     public function read(): string
     {
@@ -242,11 +226,6 @@ final class StreamConnection
     }
     */
 
-    /**
-     * Closes the current resource and updates the connection state.
-     *
-     * @return void
-     */
     /*
     public function close(): void
     {
@@ -262,13 +241,6 @@ final class StreamConnection
     }
     */
 
-    /**
-     * Ensures the current state is valid and the socket resource is available.
-     *
-     * @return void
-     *
-     * @throws LogicException If the current state is not CONNECTED or the socket resource is unavailable.
-     */
     /*
     private function assertConnected(): void
     {
@@ -299,7 +271,6 @@ final class StreamConnection
      *
      * @throws Throwable
      */
-    /*
     private function fail(Throwable $e): never
     {
         if (is_resource($this->fp)) {
@@ -307,9 +278,8 @@ final class StreamConnection
         }
 
         $this->fp = null;
-        //$this->state = ConnectionState::ERROR;
+        $this->state = ConnectionState::ERROR;
 
         throw $e;
     }
-    */
 }
