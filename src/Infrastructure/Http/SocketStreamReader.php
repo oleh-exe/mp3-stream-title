@@ -22,7 +22,7 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 use RuntimeException;
 use Throwable;
 
-final class StreamReader
+final class SocketStreamReader
 {
     /**
      * Reads data from a socket connection until the desired length is achieved.
