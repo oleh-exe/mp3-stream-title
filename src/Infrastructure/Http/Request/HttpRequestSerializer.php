@@ -19,8 +19,25 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http\Request;
 
+use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
+
 final readonly class HttpRequestSerializer
 {
+    /**
+     * @var HttpHeadersSerializer
+     */
+    private HttpHeadersSerializer $headersSerializer;
+
+    /**
+     * Initializes a new instance of the class and sets up the headers serializer.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->headersSerializer = new HttpHeadersSerializer();
+    }
+
     /**
      * Converts the provided HttpRequest object into a string representation of an HTTP request.
      *
@@ -30,18 +47,12 @@ final readonly class HttpRequestSerializer
      */
     public function toString(HttpRequest $request): string
     {
-        $lines = [];
-
-        foreach ($request->headers()->all() as $name => $value) {
-            $lines[] = $name . ': ' . $value;
-        }
-
         return sprintf(
             "%s %s HTTP/%s\r\n%s\r\n\r\n",
             $request->method()->value,
             $request->target(),
             $request->version()->value,
-            implode("\r\n", $lines)
+            $this->headersSerializer->toString($request->headers())
         );
     }
 }
