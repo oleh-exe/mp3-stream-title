@@ -23,8 +23,10 @@ use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClientConfig;
-use Mp3StreamTitle\Infrastructure\Http\FopenHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
+use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
+use Mp3StreamTitle\Infrastructure\Http\RemoteAddressFactory;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
@@ -172,35 +174,43 @@ final class Mp3StreamTitle
      * in the following format "artist name and song name".
      *
      * @param string $streamingUrl
+     *
      * @return string|int
+     *
      * @throws Throwable
      */
     private function extractUsingStream(string $streamingUrl): string|int
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
-        $stream = new StreamConnection(
-            $endpoint->getScheme(),
-            $endpoint->getHost(),
-            $endpoint->getPort(),
-            $endpoint->getRequestTarget(),
-            30
-        );
         $streamRequest = new StreamRequestFactory();
-        $httpClient = new FopenHttpClient($stream);
-
         $httpRequest = $streamRequest->create(
             $endpoint,
             $this->config
         );
 
+        $remoteAddress = new RemoteAddressFactory(
+            $endpoint
+        );
+        $streamContext = new StreamContextFactory(
+            $httpRequest,
+            30
+        );
+
+        $stream = new StreamConnection(
+            $remoteAddress,
+            $streamContext,
+            30
+        );
+
+        $headerParser = new HttpResponseHeaderParser();
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
         $streamReader = new FopenStreamReader();
 
         try {
-            $stream->open($httpRequest);
+            $stream->open();
 
-            $httpResponse = $httpClient->read();
+            $httpResponse = $headerParser->parse($stream->httpResponseHeader());
             $initialBuffer = $httpResponse->body;
             // Find out from which byte the metadata will begin
             $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
@@ -217,44 +227,6 @@ final class Mp3StreamTitle
 
         $streamTitleExtractor = new StreamTitleExtractor();
         return $streamTitleExtractor->extract($metadata);
-
-        /*
-        $offsetResolver = new OffsetResolver();
-        // Find out from which byte the metadata will begin
-        $offset = $offsetResolver->resolve($endpoint->getUrl(), $this->config);
-
-        // HTTP-request headers.
-        $optionsMethod = "GET";
-        $optionsHeader = "User-Agent: " . $this->config->userAgent . "\r\n";
-        $optionsHeader .= "Icy-MetaData: 1\r\n\r\n";
-
-        $options = [
-            'http' => [
-                'method' => $optionsMethod,
-                'header' => $optionsHeader,
-                'timeout' => 30
-            ]
-        ];
-        // Create a thread context.
-        $context = stream_context_create($options);
-        // Find out how many bytes of data need to be received.
-        $dataByte = $offset + 1 + $this->config->metaMaxLength;
-        // Open the stream using the HTTP headers set above.
-        $buffer = file_get_contents($endpoint->getUrl(), false, $context, 0, $dataByte);
-
-        if ($buffer === false) {
-            throw new RuntimeException(
-                'Failed to get server response'
-            );
-        }
-        // Find out length of metadata.
-        $metaLength = ord(substr($buffer, $offset, 1)) * 16;
-        // Get metadata in the following format "StreamTitle='artist name and song name';".
-        $metadata = substr($buffer, $offset, $metaLength);
-
-        $streamTitleExtractor = new StreamTitleExtractor();
-        return $streamTitleExtractor->extract($metadata);
-        */
     }
 
     /**
