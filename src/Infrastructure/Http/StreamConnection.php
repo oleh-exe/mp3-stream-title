@@ -21,10 +21,10 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use InvalidArgumentException;
 use LogicException;
-use Mp3StreamTitle\Domain\ValueObject\Scheme;
+
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
-use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequest;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Throwable;
 
 final class StreamConnection
@@ -35,9 +35,9 @@ final class StreamConnection
     private $fp = null;
 
     /**
-     * @var array|null $httpResponseHeader
+     * @var array $httpResponseHeader
      */
-    private ?array $httpResponseHeader;
+    private array $httpResponseHeader = array();
 
     /**
      * The current state of the connection.
@@ -47,18 +47,14 @@ final class StreamConnection
     private ConnectionState $state = ConnectionState::INITIAL;
 
     /**
-     * @param Scheme $scheme
-     * @param string $host
-     * @param int $port
-     * @param string $target
+     * @param RemoteAddressFactory $remoteAddress
+     * @param StreamContextFactory $streamContext
      * @param int $timeout
      */
     public function __construct(
-        private readonly Scheme $scheme,
-        private readonly string $host,
-        private readonly int $port,
-        private readonly string $target,
-        private readonly int $timeout
+        private readonly RemoteAddressFactory $remoteAddress,
+        private readonly StreamContextFactory $streamContext,
+        private readonly int $timeout,
     ) {
         if ($timeout <= 0) {
             throw new InvalidArgumentException(
@@ -68,11 +64,12 @@ final class StreamConnection
     }
 
     /**
-     * @param HttpRequest $request
+     *
      * @return void
+     *
      * @throws Throwable
      */
-    public function open(HttpRequest $request): void
+    public function open(): void
     {
         if ($this->state === ConnectionState::ERROR) {
             throw new LogicException(
@@ -93,28 +90,9 @@ final class StreamConnection
 
         $this->state = ConnectionState::CONNECTING;
 
-        $remoteAddress = sprintf('%s://%s', $this->scheme->value, $this->host);
-
-        // Add port if it's not the default port for the scheme
-        if ($this->port !== 80 && $this->port !== 443) {
-            $remoteAddress .= ':' . $this->port;
-        }
-
-        $remoteAddress .= $this->target;
-
         error_clear_last();
 
-        $headersSerializer = new HttpHeadersSerializer();
-
-        $context = stream_context_create([
-            'http' => [
-                'method' => $request->method()->value,
-                'timeout' => $this->timeout,
-                'header' => $headersSerializer->toString($request->headers()),
-            ],
-        ]);
-
-        $fp = fopen($remoteAddress, 'r', false, $context);
+        $fp = fopen($this->remoteAddress->create(), 'r', false, $this->streamContext->create());
 
         if ($fp === false) {
             $error = error_get_last();
@@ -212,7 +190,7 @@ final class StreamConnection
         }
     }
 
-    public function httpResponseHeader(): ?array
+    public function httpResponseHeader(): array
     {
         return $this->httpResponseHeader;
     }
