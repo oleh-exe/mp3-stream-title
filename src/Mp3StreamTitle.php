@@ -24,9 +24,10 @@ use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlHttpClientConfig;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
+use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
-use Mp3StreamTitle\Infrastructure\Http\RemoteAddressFactory;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
+use Mp3StreamTitle\Infrastructure\Http\StreamUri;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContext;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
@@ -189,11 +190,13 @@ final class Mp3StreamTitle
             $this->config
         );
 
-        $remoteAddress = new RemoteAddressFactory(
+        $remoteAddress = new StreamUri(
             $endpoint
         );
-        $streamContext = new StreamContextFactory(
+        $serializer = new HttpHeadersSerializer();
+        $streamContext = new StreamContext(
             $httpRequest,
+            $serializer,
             30
         );
 
@@ -210,7 +213,7 @@ final class Mp3StreamTitle
         try {
             $stream->open();
 
-            $httpResponse = $headerParser->parse($stream->httpResponseHeader());
+            $httpResponse = $headerParser->parse($stream->headers());
             $initialBuffer = $httpResponse->body;
             // Find out from which byte the metadata will begin
             $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
