@@ -185,15 +185,16 @@ final class Mp3StreamTitle
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
         $streamRequest = new StreamRequestFactory();
+        $serializer = new HttpHeadersSerializer();
+        $remoteAddress = new StreamUri(
+            $endpoint
+        );
+
         $httpRequest = $streamRequest->create(
             $endpoint,
             $this->config
         );
 
-        $remoteAddress = new StreamUri(
-            $endpoint
-        );
-        $serializer = new HttpHeadersSerializer();
         $streamContext = new StreamContext(
             $httpRequest,
             $serializer,
