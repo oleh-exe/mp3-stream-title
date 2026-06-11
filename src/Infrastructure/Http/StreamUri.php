@@ -21,14 +21,14 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 
-final readonly class RemoteAddressFactory
+final readonly class StreamUri
 {
     public function __construct(
         private StreamEndpoint $endpoint
     ) {
     }
 
-    public function create(): string
+    public function toString(): string
     {
         $remoteAddress = sprintf('%s://%s', $this->endpoint->getScheme()->value, $this->endpoint->getHost());
 
