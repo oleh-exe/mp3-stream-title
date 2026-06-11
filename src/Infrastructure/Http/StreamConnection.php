@@ -24,7 +24,7 @@ use LogicException;
 
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContext;
 use Throwable;
 
 final class StreamConnection
@@ -47,13 +47,13 @@ final class StreamConnection
     private ConnectionState $state = ConnectionState::INITIAL;
 
     /**
-     * @param RemoteAddressFactory $remoteAddress
-     * @param StreamContextFactory $streamContext
+     * @param StreamUri $remoteAddress
+     * @param StreamContext $streamContext
      * @param int $timeout
      */
     public function __construct(
-        private readonly RemoteAddressFactory $remoteAddress,
-        private readonly StreamContextFactory $streamContext,
+        private readonly StreamUri $remoteAddress,
+        private readonly StreamContext $streamContext,
         private readonly int $timeout,
     ) {
         if ($timeout <= 0) {
@@ -92,7 +92,7 @@ final class StreamConnection
 
         error_clear_last();
 
-        $fp = fopen($this->remoteAddress->create(), 'r', false, $this->streamContext->create());
+        $fp = fopen($this->remoteAddress->toString(), 'r', false, $this->streamContext->create());
 
         if ($fp === false) {
             $error = error_get_last();
@@ -190,7 +190,7 @@ final class StreamConnection
         }
     }
 
-    public function httpResponseHeader(): array
+    public function headers(): array
     {
         return $this->httpResponseHeader;
     }
