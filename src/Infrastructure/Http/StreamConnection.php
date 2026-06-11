@@ -92,7 +92,12 @@ final class StreamConnection
 
         error_clear_last();
 
-        $fp = fopen($this->remoteAddress->toString(), 'r', false, $this->streamContext->create());
+        $fp = fopen(
+            $this->remoteAddress->toString(),
+            'r',
+            false,
+            $this->streamContext->create()
+        );
 
         if ($fp === false) {
             $error = error_get_last();
