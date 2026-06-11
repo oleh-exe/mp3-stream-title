@@ -22,16 +22,15 @@ namespace Mp3StreamTitle\Infrastructure\Http\Request;
 use InvalidArgumentException;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 
-final readonly class StreamContextFactory
+final readonly class StreamContext
 {
     private HttpHeadersSerializer $headersSerializer;
 
     public function __construct(
         private HttpRequest $request,
+        private HttpHeadersSerializer $serializer,
         private int $timeout,
     ) {
-        $this->headersSerializer = new HttpHeadersSerializer();
-
         if ($timeout <= 0) {
             throw new InvalidArgumentException(
                 'Timeout must be greater than 0 seconds'
@@ -45,7 +44,7 @@ final readonly class StreamContextFactory
             'http' => [
                 'method' => $this->request->method()->value,
                 'timeout' => $this->timeout,
-                'header' => $this->headersSerializer->toString($this->request->headers()),
+                'header' => $this->serializer->toString($this->request->headers()),
             ],
         ]);
     }
