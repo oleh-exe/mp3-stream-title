@@ -24,9 +24,9 @@ use RuntimeException;
 
 final readonly class HttpResponseHeaderParser
 {
-    public function parse(array $lines): HttpResponse
+    public function parse(array $httpResponseHeader): HttpResponse
     {
-        [$status, $headers] = $this->parseHeaderLines($lines);
+        [$status, $headers] = $this->parseHeaderLines($httpResponseHeader);
         $headers = new HeaderCollection($headers);
 
         return new HttpResponse(
@@ -74,11 +74,6 @@ final readonly class HttpResponseHeaderParser
             if ($name === '') {
                 continue;
             }
-
-            // --- light filtering (NOT strict validation) ---
-            /*if (str_contains($value, "\r") || str_contains($value, "\n")) {
-                continue;
-            }*/
 
             $normalizedName = $this->normalizeHeaderName($name);
 
