@@ -21,7 +21,6 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use InvalidArgumentException;
 use LogicException;
-
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamContext;
@@ -35,9 +34,9 @@ final class StreamConnection
     private $fp = null;
 
     /**
-     * @var array $httpResponseHeader
+     * @var array|null The HTTP response headers from the last HTTP request, or null if no request was made.
      */
-    private array $httpResponseHeader = array();
+    private ?array $httpResponseHeader = null;
 
     /**
      * The current state of the connection.
@@ -123,8 +122,15 @@ final class StreamConnection
                 );
             }
 
-            $this->fp = $fp;
+            if (!isset($http_response_header)) {
+                throw new StreamConnectionException(
+                    'HTTP response headers are not available'
+                );
+            }
+
+            // TODO: This feature has been DEPRECATED as of PHP 8.5.0
             $this->httpResponseHeader = $http_response_header;
+            $this->fp = $fp;
             $this->state = ConnectionState::CONNECTED;
         } catch (Throwable $e) {
             $this->fail($e);
@@ -197,6 +203,12 @@ final class StreamConnection
 
     public function headers(): array
     {
+        if ($this->httpResponseHeader === null) {
+            throw new LogicException(
+                'Response headers are not available'
+            );
+        }
+
         return $this->httpResponseHeader;
     }
 
