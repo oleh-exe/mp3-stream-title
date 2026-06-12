@@ -185,7 +185,7 @@ final class Mp3StreamTitle
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
         $streamRequest = new StreamRequestFactory();
-        $serializer = new HttpHeadersSerializer();
+        $headersSerializer = new HttpHeadersSerializer();
         $remoteAddress = new StreamUri(
             $endpoint
         );
@@ -197,16 +197,14 @@ final class Mp3StreamTitle
 
         $streamContext = new StreamContext(
             $httpRequest,
-            $serializer,
+            $headersSerializer,
             30
         );
-
         $stream = new StreamConnection(
             $remoteAddress,
             $streamContext,
             30
         );
-
         $headerParser = new HttpResponseHeaderParser();
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
         $streamReader = new FopenStreamReader();
