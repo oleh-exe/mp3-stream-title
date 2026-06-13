@@ -198,7 +198,7 @@ final class Mp3StreamTitle
         $streamContext = new StreamContext(
             $httpRequest,
             $headersSerializer,
-            30
+            30.0
         );
         $stream = new StreamConnection(
             $remoteAddress,
