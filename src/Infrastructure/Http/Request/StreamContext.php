@@ -29,7 +29,7 @@ final readonly class StreamContext
     public function __construct(
         private HttpRequest $request,
         private HttpHeadersSerializer $serializer,
-        private int $timeout,
+        private float $timeout,
     ) {
         if ($timeout <= 0) {
             throw new InvalidArgumentException(
@@ -43,8 +43,11 @@ final readonly class StreamContext
         return stream_context_create([
             'http' => [
                 'method' => $this->request->method()->value,
-                'timeout' => $this->timeout,
                 'header' => $this->serializer->toString($this->request->headers()),
+                'follow_location' => 1,
+                'max_redirects' => 5,
+                'protocol_version' => $this->request->version()->value,
+                'timeout' => $this->timeout,
             ],
         ]);
     }
