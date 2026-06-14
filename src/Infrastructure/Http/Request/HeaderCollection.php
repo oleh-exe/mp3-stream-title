@@ -104,6 +104,23 @@ final readonly class HeaderCollection
     }
 
     /**
+     * Returns a new instance without the specified header.
+     *
+     * @param string $name
+     *
+     * @return self
+     */
+    public function without(string $name): self
+    {
+        $this->assertValidHeaderName($name);
+
+        $new = $this->headers;
+        unset($new[$this->normalizeHeaderName($name)]);
+
+        return new self($new);
+    }
+
+    /**
      * Normalizes and validates the provided headers.
      *
      * This method ensures that all header names and values are strings,
