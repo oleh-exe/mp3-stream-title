@@ -23,7 +23,7 @@ use InvalidArgumentException;
 use LogicException;
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamContext;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Throwable;
 
 final class StreamConnection
@@ -47,12 +47,12 @@ final class StreamConnection
 
     /**
      * @param StreamUri $remoteAddress
-     * @param StreamContext $streamContext
+     * @param StreamContextFactory $streamContext
      * @param int $timeout
      */
     public function __construct(
         private readonly StreamUri $remoteAddress,
-        private readonly StreamContext $streamContext,
+        private readonly StreamContextFactory $streamContext,
         private readonly int $timeout,
     ) {
         if ($timeout <= 0) {
