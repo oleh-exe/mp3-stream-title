@@ -27,7 +27,7 @@ use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
 use Mp3StreamTitle\Infrastructure\Http\StreamUri;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamContext;
+use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
@@ -195,7 +195,7 @@ final class Mp3StreamTitle
             $this->config
         );
 
-        $streamContext = new StreamContext(
+        $streamContext = new StreamContextFactory(
             $httpRequest,
             $headersSerializer,
             30.0
