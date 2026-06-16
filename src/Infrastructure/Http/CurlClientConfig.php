@@ -21,7 +21,7 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use InvalidArgumentException;
 
-final readonly class CurlHttpClientConfig
+final readonly class CurlClientConfig
 {
     /**
      * @var string
