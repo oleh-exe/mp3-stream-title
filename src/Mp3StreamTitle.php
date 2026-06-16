@@ -21,11 +21,12 @@ namespace Mp3StreamTitle;
 
 use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
-use Mp3StreamTitle\Infrastructure\Http\CurlHttpClient;
-use Mp3StreamTitle\Infrastructure\Http\CurlHttpClientConfig;
+use Mp3StreamTitle\Infrastructure\Http\CurlClient;
+use Mp3StreamTitle\Infrastructure\Http\CurlClientConfig;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
+use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamUri;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
@@ -148,8 +149,8 @@ final class Mp3StreamTitle
             return !$isComplete;
         };
 
-        $curlClient = new CurlHttpClient(
-            new CurlHttpClientConfig(
+        $curlClient = new CurlClient(
+            new CurlClientConfig(
                 $this->config->userAgent,
             )
         );
@@ -247,14 +248,13 @@ final class Mp3StreamTitle
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
+        $socketConfig = new SocketConnectionConfig();
         $socket = new SocketConnection(
-            $endpoint->getHost(),
-            $endpoint->getPort(),
-            $endpoint->getTransport(),
-            30
+            $endpoint,
+            $socketConfig,
         );
         $streamRequest = new StreamRequestFactory();
-        $httpClient = new SocketHttpClient($socket);
+        $httpClient = new SocketHttpClient($socket, $socketConfig);
 
         $httpRequest = $streamRequest->create(
             $endpoint,
@@ -272,7 +272,7 @@ final class Mp3StreamTitle
             // Find out from which byte the metadata will begin
             $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
             $targetLength = $offset + 1 + $this->config->metaMaxLength;
-            $safetyMargin = 8192;
+            $safetyMargin = $socketConfig->readChunkSize;
             $maxAllowed = $targetLength + $safetyMargin;
             $bodyBuffer = $streamReader->read($socket, $initialBuffer, $targetLength, $maxAllowed);
         } finally {
