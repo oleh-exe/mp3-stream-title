@@ -27,6 +27,7 @@ use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
+use Mp3StreamTitle\Infrastructure\Http\StreamConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamUri;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
@@ -196,15 +197,16 @@ final class Mp3StreamTitle
             $this->config
         );
 
+        $streamConnectionConfig = new StreamConnectionConfig();
         $streamContext = new StreamContextFactory(
             $httpRequest,
             $headersSerializer,
-            30.0
+            $streamConnectionConfig
         );
         $stream = new StreamConnection(
             $remoteAddress,
             $streamContext,
-            30
+            $streamConnectionConfig
         );
         $headerParser = new HttpResponseHeaderParser();
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
@@ -218,7 +220,7 @@ final class Mp3StreamTitle
             // Find out from which byte the metadata will begin
             $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
             $targetLength = $offset + 1 + $this->config->metaMaxLength;
-            $safetyMargin = 8192;
+            $safetyMargin = $streamConnectionConfig->readChunkSize;
             $maxAllowed = $targetLength + $safetyMargin;
             $bodyBuffer = $streamReader->read($stream, $initialBuffer, $targetLength, $maxAllowed);
         } finally {
