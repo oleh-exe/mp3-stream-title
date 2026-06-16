@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
-use InvalidArgumentException;
 use LogicException;
 use Mp3StreamTitle\Exception\Http\StreamConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
@@ -45,21 +44,11 @@ final class StreamConnection
      */
     private ConnectionState $state = ConnectionState::INITIAL;
 
-    /**
-     * @param StreamUri $remoteAddress
-     * @param StreamContextFactory $streamContext
-     * @param int $timeout
-     */
     public function __construct(
         private readonly StreamUri $remoteAddress,
         private readonly StreamContextFactory $streamContext,
-        private readonly int $timeout,
+        private readonly StreamConnectionConfig $config,
     ) {
-        if ($timeout <= 0) {
-            throw new InvalidArgumentException(
-                'Timeout must be greater than 0 seconds'
-            );
-        }
     }
 
     /**
@@ -116,7 +105,7 @@ final class StreamConnection
                 );
             }
 
-            if (!stream_set_timeout($fp, $this->timeout)) {
+            if (!stream_set_timeout($fp, $this->config->streamTimeout)) {
                 throw new StreamConnectionException(
                     'Unable to set stream timeout'
                 );
@@ -148,8 +137,7 @@ final class StreamConnection
         $this->state = ConnectionState::READING;
 
         try {
-            $length = 8192;
-            $chunk = fread($this->fp, $length);
+            $chunk = fread($this->fp, $this->config->readChunkSize);
 
             if ($chunk === false) {
                 throw new StreamConnectionException(
