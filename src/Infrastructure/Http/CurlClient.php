@@ -22,17 +22,17 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 use InvalidArgumentException;
 use Mp3StreamTitle\Exception\Http\CurlHttpException;
 
-readonly class CurlHttpClient
+readonly class CurlClient
 {
     /**
-     * @var CurlHttpClientConfig
+     * @var CurlClientConfig
      */
-    private CurlHttpClientConfig $config;
+    private CurlClientConfig $config;
 
     /**
-     * @param CurlHttpClientConfig $config
+     * @param CurlClientConfig $config
      */
-    public function __construct(CurlHttpClientConfig $config)
+    public function __construct(CurlClientConfig $config)
     {
         $this->config = $config;
     }
