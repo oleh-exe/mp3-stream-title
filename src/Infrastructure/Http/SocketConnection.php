@@ -19,9 +19,8 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
-use InvalidArgumentException;
 use LogicException;
-use Mp3StreamTitle\Domain\ValueObject\Transport;
+use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Exception\Http\SocketConnectionException;
 use Mp3StreamTitle\Infrastructure\Http\Enum\ConnectionState;
 use Throwable;
@@ -40,27 +39,10 @@ final class SocketConnection
      */
     private ConnectionState $state = ConnectionState::INITIAL;
 
-    /**
-     * @param string $host The hostname to connect to.
-     * @param int $port The port number to connect on.
-     * @param Transport $transport The transport mechanism to be used.
-     * @param int $timeout The connection timeout in seconds; must be greater than 0.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException If the timeout is less than or equal to 0.
-     */
     public function __construct(
-        private readonly string $host,
-        private readonly int $port,
-        private readonly Transport $transport,
-        private readonly int $timeout
+        private readonly StreamEndpoint $endpoint,
+        private readonly SocketConnectionConfig $config,
     ) {
-        if ($timeout <= 0) {
-            throw new InvalidArgumentException(
-                'Timeout must be greater than 0 seconds'
-            );
-        }
     }
 
     /**
@@ -96,14 +78,18 @@ final class SocketConnection
 
         $this->state = ConnectionState::CONNECTING;
 
-        $remoteAddress = sprintf('%s://%s', $this->transport->toSocketScheme(), $this->host);
+        $remoteAddress = sprintf(
+            '%s://%s',
+            $this->endpoint->getTransport()->toSocketScheme(),
+            $this->endpoint->getHost()
+        );
 
         $fp = fsockopen(
             $remoteAddress,
-            $this->port,
+            $this->endpoint->getPort(),
             $errno,
             $errstr,
-            $this->timeout
+            $this->config->timeout
         );
 
         if ($fp === false) {
@@ -123,7 +109,7 @@ final class SocketConnection
                 );
             }
 
-            if (!stream_set_timeout($fp, $this->timeout)) {
+            if (!stream_set_timeout($fp, $this->config->streamTimeout)) {
                 throw new SocketConnectionException(
                     'Unable to set stream timeout'
                 );
@@ -195,8 +181,7 @@ final class SocketConnection
         $this->state = ConnectionState::READING;
 
         try {
-            $length = 8192;
-            $chunk = fread($this->fp, $length);
+            $chunk = fread($this->fp, $this->config->readChunkSize);
 
             if ($chunk === false) {
                 throw new SocketConnectionException(
