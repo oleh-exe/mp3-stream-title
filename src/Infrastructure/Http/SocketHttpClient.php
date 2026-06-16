@@ -32,15 +32,21 @@ final class SocketHttpClient
     private SocketConnection $socket;
 
     /**
+     * @var SocketConnectionConfig
+     */
+    private SocketConnectionConfig $config;
+
+    /**
      * Constructor for initializing the class with a socket connection.
      *
      * @param SocketConnection $socket The socket connection instance.
      *
      * @return void
      */
-    public function __construct(SocketConnection $socket)
+    public function __construct(SocketConnection $socket, SocketConnectionConfig $config)
     {
         $this->socket = $socket;
+        $this->config = $config;
     }
 
     /**
@@ -56,7 +62,7 @@ final class SocketHttpClient
     {
         $findHeaders = true;
         $buffer = '';
-        $maxHeadersSize = 16384;
+        $maxHeadersSize = $this->config->maxHeadersSize;
         $serializer = new HttpRequestSerializer();
         $httpRequestString = $serializer->toString($httpRequest);
 
