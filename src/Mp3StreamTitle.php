@@ -24,6 +24,8 @@ use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Infrastructure\Http\CurlClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlClientConfig;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
+use Mp3StreamTitle\Infrastructure\Http\HttpResponseParser;
+use Mp3StreamTitle\Infrastructure\Http\IcyHeaderParser;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
@@ -132,33 +134,47 @@ final class Mp3StreamTitle
         }
 
         $endpoint = StreamEndpoint::fromString($streamingUrl);
-        // TODO: Replace with "MetadataExtractor"
-        $offsetResolver = new OffsetResolver();
-        // Find out from which byte the metadata will begin
-        $offset = $offsetResolver->resolve($endpoint->getUrl(), $this->config);
+        $remoteAddress = new StreamUri(
+            $endpoint
+        );
 
-        $parser = new IcyMetadataStreamParser(
-            $offset,
+        // TODO: Replace with "MetadataExtractor"
+        //$offsetResolver = new OffsetResolver();
+
+        $httpResponseParser = new HttpResponseParser();
+        $icyHeaderParser = new IcyHeaderParser($httpResponseParser);
+
+        $headerFunctionCallback = function (string $header) use ($icyHeaderParser): bool {
+            $isComplete = $icyHeaderParser->append($header);
+
+            return !$isComplete;
+        };
+
+        $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $icyMetadataStreamParser = new IcyMetadataStreamParser(
+            $icyHeaderParser,
+            $icyMetaIntExtractor,
             $this->config->metaMaxLength
         );
 
         /* The callback-function returns the number of data bytes received or metadata.
            The function is used as the value of the parameter "CURLOPT_WRITEFUNCTION". */
-        $callback = function (string $chunk) use ($parser): bool {
-            $isComplete = $parser->append($chunk);
+        $writeFunctionCallback = function (string $chunk) use ($icyMetadataStreamParser): bool {
+            $isComplete = $icyMetadataStreamParser->append($chunk);
 
             return !$isComplete;
         };
 
         $curlClient = new CurlClient(
+            $remoteAddress,
             new CurlClientConfig(
                 $this->config->userAgent,
             )
         );
 
-        $curlClient->getStream($endpoint->getUrl(), $callback);
+        $curlClient->getStream($headerFunctionCallback, $writeFunctionCallback);
 
-        $metadata = $parser->getMetadata();
+        $metadata = $icyMetadataStreamParser->getMetadata();
 
         if ($metadata === null) {
             throw new RuntimeException(
