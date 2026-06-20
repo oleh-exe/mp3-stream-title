@@ -19,42 +19,32 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
-use InvalidArgumentException;
 use Mp3StreamTitle\Exception\Http\CurlHttpException;
 
 readonly class CurlClient
 {
+    /**
+     * @var StreamUri
+     */
+    private StreamUri $remoteAddress;
+
     /**
      * @var CurlClientConfig
      */
     private CurlClientConfig $config;
 
     /**
+     * @param StreamUri $remoteAddress
      * @param CurlClientConfig $config
      */
-    public function __construct(CurlClientConfig $config)
+    public function __construct(StreamUri $remoteAddress, CurlClientConfig $config)
     {
+        $this->remoteAddress = $remoteAddress;
         $this->config = $config;
     }
 
-    /**
-     * Streams data from the provided URL and processes it using the callback function.
-     *
-     * @param string $streamingUrl The URL to stream data from. Must not be empty.
-     * @param callable(string): bool $callback A callback function that processes each chunk of streamed data.
-     *                                         The callback should return false to interrupt the streaming process.
-     *
-     * @return void
-     *
-     * @throws InvalidArgumentException If the provided URL is empty.
-     * @throws CurlHttpException If an error occurs during the cURL session or there is an HTTP error.
-     */
-    public function getStream(string $streamingUrl, callable $callback): void
+    public function getStream(callable $headerFunctionCallback, callable $writeFunctionCallback): void
     {
-        if ($streamingUrl === '') {
-            throw new InvalidArgumentException('URL cannot be empty');
-        }
-
         // Initialize the cURL session.
         $ch = curl_init();
 
@@ -66,7 +56,7 @@ readonly class CurlClient
 
         // Set the parameters for the session.
         curl_setopt_array($ch, [
-            CURLOPT_URL => $streamingUrl,
+            CURLOPT_URL => $this->remoteAddress->toString(),
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => false,
             CURLOPT_SSL_VERIFYPEER => $this->config->verifyPeer,
@@ -77,8 +67,16 @@ readonly class CurlClient
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
             CURLOPT_USERAGENT => $this->config->userAgent,
-            CURLOPT_WRITEFUNCTION => function ($ch, string $chunk) use ($callback, &$manuallyInterrupted): int {
-                $continueStreaming = $callback($chunk);
+            CURLOPT_HEADERFUNCTION => function ($ch, string $header) use ($headerFunctionCallback): int {
+                $headerFunctionCallback($header);
+
+                return strlen($header);
+            },
+            CURLOPT_WRITEFUNCTION => function ($ch, string $chunk) use (
+                $writeFunctionCallback,
+                &$manuallyInterrupted
+            ): int {
+                $continueStreaming = $writeFunctionCallback($chunk);
 
                 if ($continueStreaming === false) {
                     $manuallyInterrupted = true;
@@ -95,7 +93,7 @@ readonly class CurlClient
         // Execute the request.
         curl_exec($ch);
 
-        // If there are errors we save them into variables.
+        // If there are errors, we save them into variables.
         $errno = curl_errno($ch);
         $error = curl_error($ch);
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
