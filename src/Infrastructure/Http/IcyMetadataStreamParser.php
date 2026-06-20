@@ -28,27 +28,18 @@ final class IcyMetadataStreamParser
      */
     private string $buffer = '';
 
+    private ?int $offset = null;
+
     /**
      * @var string|null
      */
     private ?string $metadata = null;
 
-    /**
-     * Constructs a new instance of the class with the given offset and meta-max length.
-     *
-     * @param int $offset The offset value, which must be greater than 0.
-     * @param int $metaMaxLength The maximum length for meta-information, which must be greater than 0.
-     *
-     * @throws InvalidArgumentException If $offset or $metaMaxLength are less than or equal to 0.
-     */
     public function __construct(
-        private readonly int $offset,
+        private readonly IcyHeaderParser $icyHeaderParser,
+        private readonly IcyMetaIntExtractor $icyMetaIntExtractor,
         private readonly int $metaMaxLength
     ) {
-        if ($offset <= 0) {
-            throw new InvalidArgumentException('Offset must be greater than 0');
-        }
-
         if ($metaMaxLength <= 0) {
             throw new InvalidArgumentException('Meta-max length must be greater than 0');
         }
@@ -66,6 +57,10 @@ final class IcyMetadataStreamParser
     {
         // Save the data part into a variable.
         $this->buffer .= $chunk;
+
+        if ($this->offset === null) {
+            $this->offset = $this->getOffset();
+        }
 
         // Find out how many bytes of data need to get.
         $requiredLength = $this->offset + 1 + $this->metaMaxLength;
@@ -103,5 +98,11 @@ final class IcyMetadataStreamParser
     public function getMetadata(): ?string
     {
         return $this->metadata;
+    }
+
+    private function getOffset(): int
+    {
+        $httpResponse = $this->icyHeaderParser->response();
+        return $this->icyMetaIntExtractor->getMetaInt($httpResponse);
     }
 }
