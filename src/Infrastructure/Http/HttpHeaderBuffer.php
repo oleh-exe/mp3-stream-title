@@ -21,16 +21,9 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use LogicException;
 
-final class IcyHeaderParser
+final class HttpHeaderBuffer
 {
     private string $buffer = '';
-
-    /**
-     * @param HttpResponseParser $httpResponseParser
-     */
-    public function __construct(private readonly HttpResponseParser $httpResponseParser)
-    {
-    }
 
     /**
      * @param string $header
@@ -40,17 +33,10 @@ final class IcyHeaderParser
     {
         $this->buffer .= $header;
 
-        if (stripos($header, 'icy-metaint:') === false) {
-            return false;
-        }
-
-        return true;
+        return $header === "\r\n";
     }
 
-    /**
-     * @return HttpResponse
-     */
-    public function response(): HttpResponse
+    public function buffer(): string
     {
         if ($this->buffer === '') {
             throw new LogicException(
@@ -58,6 +44,6 @@ final class IcyHeaderParser
             );
         }
 
-        return $this->httpResponseParser->parse($this->buffer);
+        return $this->buffer;
     }
 }
