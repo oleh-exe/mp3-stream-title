@@ -21,7 +21,7 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 
 use RuntimeException;
 
-final class MetadataExtractor
+final class IcyMetadataExtractor
 {
     /**
      * Extracts ICY metadata from a buffer starting at the given offset.
