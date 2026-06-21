@@ -24,7 +24,7 @@ final class IcyHeaderHandler
     public function __construct(
         private readonly HttpHeaderBuffer $httpHeaderBuffer,
         private readonly MetaIntResolver $metaIntResolver,
-        private readonly IcyMetadataStreamParser $parser,
+        private readonly IcyMetadataBuffer $parser,
     ) {
     }
 
