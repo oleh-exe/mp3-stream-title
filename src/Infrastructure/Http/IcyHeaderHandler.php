@@ -19,23 +19,32 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
+use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
+
 final class IcyHeaderHandler
 {
     public function __construct(
         private readonly HttpHeaderBuffer $httpHeaderBuffer,
         private readonly MetaIntResolver $metaIntResolver,
-        private readonly IcyMetadataBuffer $parser,
+        private readonly IcyMetadataBuffer $buffer,
+        private readonly RequiredLengthCalculator $calculator,
+        private readonly Mp3StreamTitleConfig $config,
     ) {
     }
 
     public function handle(string $header): void
     {
-        $isComplete = $this->httpHeaderBuffer->append($header);
-
-        if ($isComplete) {
-            $metaInt = $this->metaIntResolver->resolve();
-
-            $this->parser->setOffset($metaInt);
+        if (!$this->httpHeaderBuffer->append($header)) {
+            return;
         }
+
+        $metaInt = $this->metaIntResolver->resolve();
+
+        $requiredLength = $this->calculator->calculate(
+            $metaInt,
+            $this->config->metaMaxLength
+        );
+
+        $this->buffer->setRequiredLength($requiredLength);
     }
 }
