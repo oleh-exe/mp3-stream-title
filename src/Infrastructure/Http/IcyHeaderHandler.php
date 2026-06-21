@@ -28,7 +28,7 @@ final class IcyHeaderHandler
     ) {
     }
 
-    public function handle(string $header): bool
+    public function handle(string $header): void
     {
         $isComplete = $this->httpHeaderBuffer->append($header);
 
@@ -37,7 +37,5 @@ final class IcyHeaderHandler
 
             $this->parser->setOffset($metaInt);
         }
-
-        return !$isComplete;
     }
 }
