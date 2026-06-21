@@ -33,17 +33,29 @@ readonly class CurlClient
      */
     private CurlClientConfig $config;
 
+    private IcyHeaderHandler $headerHandler;
+
+    private IcyMetadataHandler $metadataHandler;
+
     /**
      * @param StreamUri $remoteAddress
      * @param CurlClientConfig $config
+     * @param IcyHeaderHandler $headerHandler
+     * @param IcyMetadataHandler $metadataHandler
      */
-    public function __construct(StreamUri $remoteAddress, CurlClientConfig $config)
-    {
+    public function __construct(
+        StreamUri $remoteAddress,
+        CurlClientConfig $config,
+        IcyHeaderHandler $headerHandler,
+        IcyMetadataHandler $metadataHandler
+    ) {
         $this->remoteAddress = $remoteAddress;
         $this->config = $config;
+        $this->headerHandler = $headerHandler;
+        $this->metadataHandler = $metadataHandler;
     }
 
-    public function getStream(callable $headerFunctionCallback, callable $writeFunctionCallback): void
+    public function getStream(): void
     {
         // Initialize the cURL session.
         $ch = curl_init();
@@ -67,16 +79,15 @@ readonly class CurlClient
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,
             CURLOPT_USERAGENT => $this->config->userAgent,
-            CURLOPT_HEADERFUNCTION => function ($ch, string $header) use ($headerFunctionCallback): int {
-                $headerFunctionCallback($header);
+            CURLOPT_HEADERFUNCTION => function ($ch, string $header): int {
+                $this->headerHandler->handle($header);
 
                 return strlen($header);
             },
             CURLOPT_WRITEFUNCTION => function ($ch, string $chunk) use (
-                $writeFunctionCallback,
                 &$manuallyInterrupted
             ): int {
-                $continueStreaming = $writeFunctionCallback($chunk);
+                $continueStreaming = $this->metadataHandler->handle($chunk);
 
                 if ($continueStreaming === false) {
                     $manuallyInterrupted = true;
