@@ -31,14 +31,15 @@ use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyHeaderHandler;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataHandler;
 use Mp3StreamTitle\Infrastructure\Http\MetaIntResolver;
+use Mp3StreamTitle\Infrastructure\Http\RequiredLengthCalculator;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamUri;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
-use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
+use Mp3StreamTitle\Infrastructure\Http\IcyMetadataBuffer;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
-use Mp3StreamTitle\Infrastructure\Http\MetadataExtractor;
+use Mp3StreamTitle\Infrastructure\Http\IcyMetadataExtractor;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamRequestFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnection;
 use Mp3StreamTitle\Infrastructure\Http\StreamConnection;
@@ -139,10 +140,6 @@ final class Mp3StreamTitle
         $remoteAddress = new StreamUri(
             $endpoint
         );
-
-        // TODO: Replace with "MetadataExtractor"
-        //$offsetResolver = new OffsetResolver();
-
         $httpHeaderBuffer = new HttpHeaderBuffer();
         $httpResponseParser = new HttpResponseParser();
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
@@ -151,16 +148,17 @@ final class Mp3StreamTitle
             $httpResponseParser,
             $icyMetaIntExtractor
         );
-        $icyMetadataStreamParser = new IcyMetadataStreamParser(
-            $this->config->metaMaxLength
-        );
+        $icyMetadataBuffer = new IcyMetadataBuffer();
+        $requiredLengthCalculator = new RequiredLengthCalculator();
         $headerHandler = new IcyHeaderHandler(
             $httpHeaderBuffer,
             $metaIntResolver,
-            $icyMetadataStreamParser
+            $icyMetadataBuffer,
+            $requiredLengthCalculator,
+            $this->config
         );
         $metadataHandler = new IcyMetadataHandler(
-            $icyMetadataStreamParser
+            $icyMetadataBuffer
         );
         $curlClient = new CurlClient(
             $remoteAddress,
@@ -173,15 +171,13 @@ final class Mp3StreamTitle
 
         $curlClient->getStream();
 
-        $metadata = $icyMetadataStreamParser->getMetadata();
+        $icyMetadataExtractor = new IcyMetadataExtractor();
 
-        if ($metadata === null) {
-            throw new RuntimeException(
-                'Failed to extract ICY metadata from the stream'
-            );
-        }
+        $metaInt = $metaIntResolver->resolve();
+        $metadata = $icyMetadataExtractor->extract($icyMetadataBuffer->buffer(), $metaInt);
 
         $streamTitleExtractor = new StreamTitleExtractor();
+
         return $streamTitleExtractor->extract($metadata);
     }
 
@@ -242,8 +238,8 @@ final class Mp3StreamTitle
             $stream->close();
         }
 
-        $metadataExtractor = new MetadataExtractor();
-        $metadata = $metadataExtractor->extract($bodyBuffer, $offset);
+        $icyMetadataExtractor = new IcyMetadataExtractor();
+        $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
 
         $streamTitleExtractor = new StreamTitleExtractor();
         return $streamTitleExtractor->extract($metadata);
@@ -296,8 +292,8 @@ final class Mp3StreamTitle
             $socket->close();
         }
 
-        $metadataExtractor = new MetadataExtractor();
-        $metadata = $metadataExtractor->extract($bodyBuffer, $offset);
+        $icyMetadataExtractor = new IcyMetadataExtractor();
+        $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
 
         $streamTitleExtractor = new StreamTitleExtractor();
         return $streamTitleExtractor->extract($metadata);
