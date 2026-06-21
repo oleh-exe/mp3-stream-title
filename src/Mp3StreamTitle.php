@@ -25,9 +25,12 @@ use Mp3StreamTitle\Infrastructure\Http\CurlClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlClientConfig;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseParser;
-use Mp3StreamTitle\Infrastructure\Http\IcyHeaderParser;
+use Mp3StreamTitle\Infrastructure\Http\HttpHeaderBuffer;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
+use Mp3StreamTitle\Infrastructure\Http\IcyHeaderHandler;
+use Mp3StreamTitle\Infrastructure\Http\IcyMetadataHandler;
+use Mp3StreamTitle\Infrastructure\Http\MetaIntResolver;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamConnectionConfig;
 use Mp3StreamTitle\Infrastructure\Http\StreamUri;
@@ -36,7 +39,6 @@ use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetadataStreamParser;
 use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
 use Mp3StreamTitle\Infrastructure\Http\MetadataExtractor;
-use Mp3StreamTitle\Infrastructure\Http\OffsetResolver;
 use Mp3StreamTitle\Infrastructure\Http\Request\StreamRequestFactory;
 use Mp3StreamTitle\Infrastructure\Http\SocketConnection;
 use Mp3StreamTitle\Infrastructure\Http\StreamConnection;
@@ -141,38 +143,35 @@ final class Mp3StreamTitle
         // TODO: Replace with "MetadataExtractor"
         //$offsetResolver = new OffsetResolver();
 
+        $httpHeaderBuffer = new HttpHeaderBuffer();
         $httpResponseParser = new HttpResponseParser();
-        $icyHeaderParser = new IcyHeaderParser($httpResponseParser);
-
-        $headerFunctionCallback = function (string $header) use ($icyHeaderParser): bool {
-            $isComplete = $icyHeaderParser->append($header);
-
-            return !$isComplete;
-        };
-
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $metaIntResolver = new MetaIntResolver(
+            $httpHeaderBuffer,
+            $httpResponseParser,
+            $icyMetaIntExtractor
+        );
         $icyMetadataStreamParser = new IcyMetadataStreamParser(
-            $icyHeaderParser,
-            $icyMetaIntExtractor,
             $this->config->metaMaxLength
         );
-
-        /* The callback-function returns the number of data bytes received or metadata.
-           The function is used as the value of the parameter "CURLOPT_WRITEFUNCTION". */
-        $writeFunctionCallback = function (string $chunk) use ($icyMetadataStreamParser): bool {
-            $isComplete = $icyMetadataStreamParser->append($chunk);
-
-            return !$isComplete;
-        };
-
+        $headerHandler = new IcyHeaderHandler(
+            $httpHeaderBuffer,
+            $metaIntResolver,
+            $icyMetadataStreamParser
+        );
+        $metadataHandler = new IcyMetadataHandler(
+            $icyMetadataStreamParser
+        );
         $curlClient = new CurlClient(
             $remoteAddress,
             new CurlClientConfig(
                 $this->config->userAgent,
-            )
+            ),
+            $headerHandler,
+            $metadataHandler
         );
 
-        $curlClient->getStream($headerFunctionCallback, $writeFunctionCallback);
+        $curlClient->getStream();
 
         $metadata = $icyMetadataStreamParser->getMetadata();
 
