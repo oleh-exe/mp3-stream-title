@@ -22,7 +22,7 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 final class IcyMetadataHandler
 {
     public function __construct(
-        private readonly IcyMetadataStreamParser $parser,
+        private readonly IcyMetadataBuffer $parser,
     ) {
     }
 
