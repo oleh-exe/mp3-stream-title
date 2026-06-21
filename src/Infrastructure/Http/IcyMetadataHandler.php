@@ -22,12 +22,12 @@ namespace Mp3StreamTitle\Infrastructure\Http;
 final class IcyMetadataHandler
 {
     public function __construct(
-        private readonly IcyMetadataBuffer $parser,
+        private readonly IcyMetadataBuffer $buffer,
     ) {
     }
 
     public function handle(string $chunk): bool
     {
-        return !$this->parser->append($chunk);
+        return !$this->buffer->append($chunk);
     }
 }
