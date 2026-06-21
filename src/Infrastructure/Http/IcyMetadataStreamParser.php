@@ -20,15 +20,16 @@ declare(strict_types=1);
 namespace Mp3StreamTitle\Infrastructure\Http;
 
 use InvalidArgumentException;
+use LogicException;
 
 final class IcyMetadataStreamParser
 {
+    private ?int $offset = null;
+
     /**
      * @var string
      */
     private string $buffer = '';
-
-    private ?int $offset = null;
 
     /**
      * @var string|null
@@ -36,8 +37,6 @@ final class IcyMetadataStreamParser
     private ?string $metadata = null;
 
     public function __construct(
-        private readonly IcyHeaderParser $icyHeaderParser,
-        private readonly IcyMetaIntExtractor $icyMetaIntExtractor,
         private readonly int $metaMaxLength
     ) {
         if ($metaMaxLength <= 0) {
@@ -45,22 +44,16 @@ final class IcyMetadataStreamParser
         }
     }
 
-    /**
-     * Appends a chunk of data to the internal buffer and processes metadata if certain conditions are met.
-     *
-     * @param string $chunk The chunk of data to append to the buffer.
-     *
-     * @return bool Returns true if the metadata is successfully processed,
-     * or false if the buffer does not yet contain enough data.
-     */
     public function append(string $chunk): bool
     {
+        if ($this->offset === null) {
+            throw new LogicException(
+                'Metadata offset is not initialized'
+            );
+        }
+
         // Save the data part into a variable.
         $this->buffer .= $chunk;
-
-        if ($this->offset === null) {
-            $this->offset = $this->getOffset();
-        }
 
         // Find out how many bytes of data need to get.
         $requiredLength = $this->offset + 1 + $this->metaMaxLength;
@@ -79,7 +72,7 @@ final class IcyMetadataStreamParser
 
         // ICY metadata block structure:
         // [offset]      = length byte (metadata length / 16)
-        // [offset + 1]  = start of actual metadata (e.g. StreamTitle='...';)
+        // [offset + 1]  = start of actual metadata (e.g., StreamTitle='...';)
         // Metadata format example: StreamTitle='artist name and song name';
         $this->metadata = substr(
             $this->buffer,
@@ -90,6 +83,17 @@ final class IcyMetadataStreamParser
         return true;
     }
 
+    public function setOffset(int $offset): void
+    {
+        if ($this->offset !== null) {
+            throw new LogicException(
+                'Metadata offset already initialized'
+            );
+        }
+
+        $this->offset = $offset;
+    }
+
     /**
      * Retrieves the metadata associated with the object.
      *
@@ -98,11 +102,5 @@ final class IcyMetadataStreamParser
     public function getMetadata(): ?string
     {
         return $this->metadata;
-    }
-
-    private function getOffset(): int
-    {
-        $httpResponse = $this->icyHeaderParser->response();
-        return $this->icyMetaIntExtractor->getMetaInt($httpResponse);
     }
 }
