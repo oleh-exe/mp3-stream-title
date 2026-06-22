@@ -23,6 +23,7 @@ use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
 use Mp3StreamTitle\Infrastructure\Http\CurlClient;
 use Mp3StreamTitle\Infrastructure\Http\CurlClientConfig;
+use Mp3StreamTitle\Infrastructure\Http\CurlHeaderSerializer;
 use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
 use Mp3StreamTitle\Infrastructure\Http\HttpResponseParser;
 use Mp3StreamTitle\Infrastructure\Http\HttpHeaderBuffer;
@@ -137,9 +138,19 @@ final class Mp3StreamTitle
         }
 
         $endpoint = StreamEndpoint::fromString($streamingUrl);
+
         $remoteAddress = new StreamUri(
             $endpoint
         );
+        $streamRequestFactory = new StreamRequestFactory();
+
+        $httpRequest = $streamRequestFactory->create(
+            $endpoint,
+            $this->config
+        );
+
+        $curlHeaderSerializer = new CurlHeaderSerializer();
+
         $httpHeaderBuffer = new HttpHeaderBuffer();
         $httpResponseParser = new HttpResponseParser();
         $icyMetaIntExtractor = new IcyMetaIntExtractor();
@@ -162,8 +173,9 @@ final class Mp3StreamTitle
         );
         $curlClient = new CurlClient(
             $remoteAddress,
+            $httpRequest,
             new CurlClientConfig(),
-            $this->config,
+            $curlHeaderSerializer,
             $headerHandler,
             $metadataHandler
         );
@@ -196,13 +208,13 @@ final class Mp3StreamTitle
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
-        $streamRequest = new StreamRequestFactory();
+        $streamRequestFactory = new StreamRequestFactory();
         $headersSerializer = new HttpHeadersSerializer();
         $remoteAddress = new StreamUri(
             $endpoint
         );
 
-        $httpRequest = $streamRequest->create(
+        $httpRequest = $streamRequestFactory->create(
             $endpoint,
             $this->config
         );
@@ -265,10 +277,10 @@ final class Mp3StreamTitle
             $endpoint,
             $socketConfig,
         );
-        $streamRequest = new StreamRequestFactory();
+        $streamRequestFactory = new StreamRequestFactory();
         $httpClient = new SocketHttpClient($socket, $socketConfig);
 
-        $httpRequest = $streamRequest->create(
+        $httpRequest = $streamRequestFactory->create(
             $endpoint,
             $this->config
         );
