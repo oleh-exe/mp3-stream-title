@@ -24,11 +24,6 @@ use InvalidArgumentException;
 final readonly class CurlClientConfig
 {
     /**
-     * @var array
-     */
-    public array $headers;
-
-    /**
      * @var int
      */
     public int $timeout;
@@ -61,7 +56,6 @@ final readonly class CurlClientConfig
     /**
      * Constructor for the class.
      *
-     * @param array $headers Array of headers to include in HTTP requests.
      * @param int $timeout The timeout duration in seconds for the request.
      * @param int $connectTimeout The connection timeout duration in seconds.
      * @param bool $followLocation Determines whether to follow redirects. Must be a boolean. Defaults to true.
@@ -74,7 +68,6 @@ final readonly class CurlClientConfig
      * @throws InvalidArgumentException If any of the provided parameters are invalid.
      */
     public function __construct(
-        array $headers = ['Icy-MetaData: 1'],
         int $timeout = 30,
         int $connectTimeout = 10,
         bool $followLocation = true,
@@ -82,10 +75,6 @@ final readonly class CurlClientConfig
         bool $verifyPeer = true,
         int $verifyHost = 2,
     ) {
-        if (empty($headers)) {
-            throw new InvalidArgumentException('The header array cannot be empty');
-        }
-
         if ($timeout <= 0) {
             throw new InvalidArgumentException('Timeout must be greater than 0 seconds');
         }
@@ -106,7 +95,6 @@ final readonly class CurlClientConfig
             throw new InvalidArgumentException('verifyHost must be 0 or 2');
         }
 
-        $this->headers = $headers;
         $this->timeout = $timeout;
         $this->connectTimeout = $connectTimeout;
         $this->followLocation = $followLocation;
