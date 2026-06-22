@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
+use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Exception\Http\CurlHttpException;
 
 readonly class CurlClient
@@ -31,25 +32,39 @@ readonly class CurlClient
     /**
      * @var CurlClientConfig
      */
-    private CurlClientConfig $config;
+    private CurlClientConfig $curlClientConfig;
 
+    /**
+     * @var Mp3StreamTitleConfig
+     */
+    private Mp3StreamTitleConfig $config;
+
+    /**
+     * @var IcyHeaderHandler
+     */
     private IcyHeaderHandler $headerHandler;
 
+    /**
+     * @var IcyMetadataHandler
+     */
     private IcyMetadataHandler $metadataHandler;
 
     /**
      * @param StreamUri $remoteAddress
-     * @param CurlClientConfig $config
+     * @param CurlClientConfig $curlClientConfig
+     * @param Mp3StreamTitleConfig $config
      * @param IcyHeaderHandler $headerHandler
      * @param IcyMetadataHandler $metadataHandler
      */
     public function __construct(
         StreamUri $remoteAddress,
-        CurlClientConfig $config,
+        CurlClientConfig $curlClientConfig,
+        Mp3StreamTitleConfig $config,
         IcyHeaderHandler $headerHandler,
         IcyMetadataHandler $metadataHandler
     ) {
         $this->remoteAddress = $remoteAddress;
+        $this->curlClientConfig = $curlClientConfig;
         $this->config = $config;
         $this->headerHandler = $headerHandler;
         $this->metadataHandler = $metadataHandler;
@@ -71,13 +86,13 @@ readonly class CurlClient
             CURLOPT_URL => $this->remoteAddress->toString(),
             CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => false,
-            CURLOPT_SSL_VERIFYPEER => $this->config->verifyPeer,
-            CURLOPT_SSL_VERIFYHOST => $this->config->verifyHost,
-            CURLOPT_TIMEOUT => $this->config->timeout,
-            CURLOPT_CONNECTTIMEOUT => $this->config->connectTimeout,
-            CURLOPT_HTTPHEADER => $this->config->headers,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_MAXREDIRS => 5,
+            CURLOPT_SSL_VERIFYPEER => $this->curlClientConfig->verifyPeer,
+            CURLOPT_SSL_VERIFYHOST => $this->curlClientConfig->verifyHost,
+            CURLOPT_TIMEOUT => $this->curlClientConfig->timeout,
+            CURLOPT_CONNECTTIMEOUT => $this->curlClientConfig->connectTimeout,
+            CURLOPT_HTTPHEADER => $this->curlClientConfig->headers,
+            CURLOPT_FOLLOWLOCATION => $this->curlClientConfig->followLocation,
+            CURLOPT_MAXREDIRS => $this->curlClientConfig->maxRedirects,
             CURLOPT_USERAGENT => $this->config->userAgent,
             CURLOPT_HEADERFUNCTION => function ($ch, string $header): int {
                 $this->headerHandler->handle($header);
