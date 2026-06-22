@@ -19,8 +19,8 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Infrastructure\Http;
 
-use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Exception\Http\CurlHttpException;
+use Mp3StreamTitle\Infrastructure\Http\Request\HttpRequest;
 
 readonly class CurlClient
 {
@@ -30,14 +30,19 @@ readonly class CurlClient
     private StreamUri $remoteAddress;
 
     /**
+     * @var HttpRequest
+     */
+    private HttpRequest $request;
+
+    /**
      * @var CurlClientConfig
      */
     private CurlClientConfig $curlClientConfig;
 
     /**
-     * @var Mp3StreamTitleConfig
+     * @var CurlHeaderSerializer
      */
-    private Mp3StreamTitleConfig $config;
+    private CurlHeaderSerializer $headerSerializer;
 
     /**
      * @var IcyHeaderHandler
@@ -51,21 +56,24 @@ readonly class CurlClient
 
     /**
      * @param StreamUri $remoteAddress
+     * @param HttpRequest $request
      * @param CurlClientConfig $curlClientConfig
-     * @param Mp3StreamTitleConfig $config
+     * @param CurlHeaderSerializer $headerSerializer
      * @param IcyHeaderHandler $headerHandler
      * @param IcyMetadataHandler $metadataHandler
      */
     public function __construct(
         StreamUri $remoteAddress,
+        HttpRequest $request,
         CurlClientConfig $curlClientConfig,
-        Mp3StreamTitleConfig $config,
+        CurlHeaderSerializer $headerSerializer,
         IcyHeaderHandler $headerHandler,
         IcyMetadataHandler $metadataHandler
     ) {
         $this->remoteAddress = $remoteAddress;
+        $this->request = $request;
         $this->curlClientConfig = $curlClientConfig;
-        $this->config = $config;
+        $this->headerSerializer = $headerSerializer;
         $this->headerHandler = $headerHandler;
         $this->metadataHandler = $metadataHandler;
     }
@@ -90,10 +98,11 @@ readonly class CurlClient
             CURLOPT_SSL_VERIFYHOST => $this->curlClientConfig->verifyHost,
             CURLOPT_TIMEOUT => $this->curlClientConfig->timeout,
             CURLOPT_CONNECTTIMEOUT => $this->curlClientConfig->connectTimeout,
-            CURLOPT_HTTPHEADER => $this->curlClientConfig->headers,
+            CURLOPT_HTTPHEADER => $this->headerSerializer->serialize(
+                $this->request->headers()
+            ),
             CURLOPT_FOLLOWLOCATION => $this->curlClientConfig->followLocation,
             CURLOPT_MAXREDIRS => $this->curlClientConfig->maxRedirects,
-            CURLOPT_USERAGENT => $this->config->userAgent,
             CURLOPT_HEADERFUNCTION => function ($ch, string $header): int {
                 $this->headerHandler->handle($header);
 
