@@ -24,11 +24,6 @@ use InvalidArgumentException;
 final readonly class CurlClientConfig
 {
     /**
-     * @var string
-     */
-    public string $userAgent;
-
-    /**
      * @var array
      */
     public array $headers;
@@ -46,6 +41,16 @@ final readonly class CurlClientConfig
     /**
      * @var bool
      */
+    public bool $followLocation;
+
+    /**
+     * @var int
+     */
+    public int $maxRedirects;
+
+    /**
+     * @var bool
+     */
     public bool $verifyPeer;
 
     /**
@@ -56,29 +61,27 @@ final readonly class CurlClientConfig
     /**
      * Constructor for the class.
      *
-     * @param string $userAgent The User-Agent string to use for HTTP requests.
      * @param array $headers Array of headers to include in HTTP requests.
      * @param int $timeout The timeout duration in seconds for the request.
      * @param int $connectTimeout The connection timeout duration in seconds.
+     * @param bool $followLocation Determines whether to follow redirects. Must be a boolean. Defaults to true.
+     * @param int $maxRedirects The maximum number of redirects to follow. Must be greater than or equal to -1 (where -1 indicates no limit). Defaults to 5.
      * @param bool $verifyPeer Whether to verify the SSL certificate of the peer.
      * @param int $verifyHost The level of host verification to perform (must be 0 or 2).
      *
      * @return void
      *
-     * @throws InvalidArgumentException If any argument is invalid (e.g., empty User-Agent, invalid timeout values, etc.).
+     * @throws InvalidArgumentException If any of the provided parameters are invalid.
      */
     public function __construct(
-        string $userAgent = 'Mp3StreamTitle/1.0 (PHP 8.2; +https://github.com/oleh-exe/mp3-stream-title)',
         array $headers = ['Icy-MetaData: 1'],
         int $timeout = 30,
         int $connectTimeout = 10,
+        bool $followLocation = true,
+        int $maxRedirects = 5,
         bool $verifyPeer = true,
         int $verifyHost = 2,
     ) {
-        if ($userAgent === '') {
-            throw new InvalidArgumentException('User-Agent cannot be empty');
-        }
-
         if (empty($headers)) {
             throw new InvalidArgumentException('The header array cannot be empty');
         }
@@ -91,14 +94,23 @@ final readonly class CurlClientConfig
             throw new InvalidArgumentException('Connection timeout must be greater than 0 seconds');
         }
 
+        if (!is_bool($followLocation)) {
+            throw new InvalidArgumentException('followLocation must be true or false');
+        }
+
+        if ($maxRedirects < -1) {
+            throw new InvalidArgumentException('maxRedirects must be greater than or equal to -1');
+        }
+
         if (!in_array($verifyHost, [0, 2], true)) {
             throw new InvalidArgumentException('verifyHost must be 0 or 2');
         }
 
-        $this->userAgent = $userAgent;
         $this->headers = $headers;
         $this->timeout = $timeout;
         $this->connectTimeout = $connectTimeout;
+        $this->followLocation = $followLocation;
+        $this->maxRedirects = $maxRedirects;
         $this->verifyPeer = $verifyPeer;
         $this->verifyHost = $verifyHost;
     }
