@@ -162,9 +162,8 @@ final class Mp3StreamTitle
         );
         $curlClient = new CurlClient(
             $remoteAddress,
-            new CurlClientConfig(
-                $this->config->userAgent,
-            ),
+            new CurlClientConfig(),
+            $this->config,
             $headerHandler,
             $metadataHandler
         );
