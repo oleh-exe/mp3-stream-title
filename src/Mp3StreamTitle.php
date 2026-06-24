@@ -19,33 +19,33 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle;
 
-use Mp3StreamTitle\Application\Config\Mp3StreamTitleConfig;
-use Mp3StreamTitle\Domain\ValueObject\StreamEndpoint;
-use Mp3StreamTitle\Infrastructure\Http\CurlClient;
-use Mp3StreamTitle\Infrastructure\Http\CurlClientConfig;
-use Mp3StreamTitle\Infrastructure\Http\CurlHeaderSerializer;
-use Mp3StreamTitle\Infrastructure\Http\FopenStreamReader;
-use Mp3StreamTitle\Infrastructure\Http\HttpResponseParser;
-use Mp3StreamTitle\Infrastructure\Http\HttpHeaderBuffer;
-use Mp3StreamTitle\Infrastructure\Http\HttpHeadersSerializer;
-use Mp3StreamTitle\Infrastructure\Http\HttpResponseHeaderParser;
-use Mp3StreamTitle\Infrastructure\Http\IcyHeaderHandler;
-use Mp3StreamTitle\Infrastructure\Http\IcyMetadataHandler;
-use Mp3StreamTitle\Infrastructure\Http\MetaIntResolver;
-use Mp3StreamTitle\Infrastructure\Http\RequiredLengthCalculator;
-use Mp3StreamTitle\Infrastructure\Http\SocketConnectionConfig;
-use Mp3StreamTitle\Infrastructure\Http\StreamConnectionConfig;
-use Mp3StreamTitle\Infrastructure\Http\StreamUri;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamContextFactory;
-use Mp3StreamTitle\Infrastructure\Http\SocketHttpClient;
-use Mp3StreamTitle\Infrastructure\Http\IcyMetadataBuffer;
-use Mp3StreamTitle\Infrastructure\Http\IcyMetaIntExtractor;
-use Mp3StreamTitle\Infrastructure\Http\IcyMetadataExtractor;
-use Mp3StreamTitle\Infrastructure\Http\Request\StreamRequestFactory;
-use Mp3StreamTitle\Infrastructure\Http\SocketConnection;
-use Mp3StreamTitle\Infrastructure\Http\StreamConnection;
-use Mp3StreamTitle\Infrastructure\Http\SocketStreamReader;
-use Mp3StreamTitle\Infrastructure\Metadata\StreamTitleExtractor;
+use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
+use Mp3StreamTitle\Http\Request\StreamContextFactory;
+use Mp3StreamTitle\Http\Request\StreamRequestFactory;
+use Mp3StreamTitle\Http\Response\HttpHeaderBuffer;
+use Mp3StreamTitle\Http\Response\HttpResponseHeaderParser;
+use Mp3StreamTitle\Http\Response\HttpResponseParser;
+use Mp3StreamTitle\Http\Serializer\HttpHeadersSerializer;
+use Mp3StreamTitle\Icy\IcyHeaderHandler;
+use Mp3StreamTitle\Icy\IcyMetadataBuffer;
+use Mp3StreamTitle\Icy\IcyMetadataExtractor;
+use Mp3StreamTitle\Icy\IcyMetadataHandler;
+use Mp3StreamTitle\Icy\IcyMetaIntParser;
+use Mp3StreamTitle\Icy\MetaIntResolver;
+use Mp3StreamTitle\Metadata\RequiredLengthCalculator;
+use Mp3StreamTitle\Metadata\StreamTitleExtractor;
+use Mp3StreamTitle\Transport\Curl\CurlClient;
+use Mp3StreamTitle\Transport\Curl\CurlClientConfig;
+use Mp3StreamTitle\Transport\Curl\CurlHeaderSerializer;
+use Mp3StreamTitle\Transport\Socket\SocketConnection;
+use Mp3StreamTitle\Transport\Socket\SocketConnectionConfig;
+use Mp3StreamTitle\Transport\Socket\SocketHttpClient;
+use Mp3StreamTitle\Transport\Socket\SocketStreamReader;
+use Mp3StreamTitle\Transport\Stream\FopenStreamReader;
+use Mp3StreamTitle\Transport\Stream\StreamConnection;
+use Mp3StreamTitle\Transport\Stream\StreamConnectionConfig;
+use Mp3StreamTitle\ValueObject\StreamEndpoint;
+use Mp3StreamTitle\ValueObject\StreamUri;
 use RuntimeException;
 use Throwable;
 
@@ -153,11 +153,11 @@ final class Mp3StreamTitle
 
         $httpHeaderBuffer = new HttpHeaderBuffer();
         $httpResponseParser = new HttpResponseParser();
-        $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $icyMetaIntParser = new IcyMetaIntParser();
         $metaIntResolver = new MetaIntResolver(
             $httpHeaderBuffer,
             $httpResponseParser,
-            $icyMetaIntExtractor
+            $icyMetaIntParser
         );
         $icyMetadataBuffer = new IcyMetadataBuffer();
         $requiredLengthCalculator = new RequiredLengthCalculator();
@@ -231,7 +231,7 @@ final class Mp3StreamTitle
             $streamConnectionConfig
         );
         $headerParser = new HttpResponseHeaderParser();
-        $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $icyMetaIntParser = new IcyMetaIntParser();
         $streamReader = new FopenStreamReader();
 
         try {
@@ -240,7 +240,7 @@ final class Mp3StreamTitle
             $httpResponse = $headerParser->parse($stream->headers());
             $initialBuffer = $httpResponse->body;
             // Find out from which byte the metadata will begin
-            $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
+            $offset = $icyMetaIntParser->getMetaInt($httpResponse);
             $targetLength = $offset + 1 + $this->config->metaMaxLength;
             $safetyMargin = $streamConnectionConfig->readChunkSize;
             $maxAllowed = $targetLength + $safetyMargin;
@@ -285,7 +285,7 @@ final class Mp3StreamTitle
             $this->config
         );
 
-        $icyMetaIntExtractor = new IcyMetaIntExtractor();
+        $icyMetaIntParser = new IcyMetaIntParser();
         $streamReader = new SocketStreamReader();
 
         try {
@@ -294,7 +294,7 @@ final class Mp3StreamTitle
             $httpResponse = $httpClient->send($httpRequest);
             $initialBuffer = $httpResponse->body;
             // Find out from which byte the metadata will begin
-            $offset = $icyMetaIntExtractor->getMetaInt($httpResponse);
+            $offset = $icyMetaIntParser->getMetaInt($httpResponse);
             $targetLength = $offset + 1 + $this->config->metaMaxLength;
             $safetyMargin = $socketConfig->readChunkSize;
             $maxAllowed = $targetLength + $safetyMargin;
