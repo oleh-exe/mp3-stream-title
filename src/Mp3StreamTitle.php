@@ -150,7 +150,6 @@ final class Mp3StreamTitle
         );
 
         $curlHeaderSerializer = new CurlHeaderSerializer();
-
         $httpHeaderBuffer = new HttpHeaderBuffer();
         $httpResponseParser = new HttpResponseParser();
         $icyMetaIntParser = new IcyMetaIntParser();
@@ -253,6 +252,7 @@ final class Mp3StreamTitle
         $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
 
         $streamTitleExtractor = new StreamTitleExtractor();
+
         return $streamTitleExtractor->extract($metadata);
     }
 
@@ -307,6 +307,7 @@ final class Mp3StreamTitle
         $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
 
         $streamTitleExtractor = new StreamTitleExtractor();
+
         return $streamTitleExtractor->extract($metadata);
     }
 }
