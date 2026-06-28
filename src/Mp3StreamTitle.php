@@ -98,11 +98,11 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl
      *
-     * @return string|int
+     * @return string
      *
      * @throws Throwable
      */
-    public function sendRequest(string $streamingUrl): string|int
+    public function streamTitle(string $streamingUrl): string
     {
         return match ($this->config->sendType) {
             // Use the cURL-function.
@@ -111,8 +111,6 @@ final class Mp3StreamTitle
             self::SEND_SOCKET => $this->extractUsingSocket($streamingUrl),
             // Use the FGC-function.
             self::SEND_FGC => $this->extractUsingStream($streamingUrl),
-            // TODO: Finalize
-            //default => $this->error('error.invalid_send_type'),
         };
     }
 
@@ -199,11 +197,11 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl
      *
-     * @return string|int
+     * @return string
      *
      * @throws Throwable
      */
-    private function extractUsingStream(string $streamingUrl): string|int
+    private function extractUsingStream(string $streamingUrl): string
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
