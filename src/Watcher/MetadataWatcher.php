@@ -50,7 +50,7 @@ final class MetadataWatcher
         $lastTitle = null; // ?string
 
         while (true) {
-            $title = $this->client->streamTitle($url);
+            $title = $this->client->fetchStreamTitle($url);
 
             if ($title !== $lastTitle) {
                 $lastTitle = $title;
