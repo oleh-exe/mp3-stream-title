@@ -28,7 +28,7 @@ use Mp3StreamTitle\Mp3StreamTitle;
 $mp3 = new Mp3StreamTitle();
 
 // Replace with a direct radio stream link
-echo $mp3->sendRequest('http://example.com');
+echo $mp3->streamTitle('http://example.com');
 ```
 
 ## 👨‍💻 Author
