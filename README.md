@@ -21,14 +21,14 @@ A lightweight PHP library to fetch the **currently playing track** from any onli
 ```php
 <?php
 
-require_once 'Mp3StreamTitle' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Mp3StreamTitle.php';
+require_once 'Mp3StreamTitle/src/Mp3StreamTitle.php';
 
 use Mp3StreamTitle\Mp3StreamTitle;
 
-$mp3 = new Mp3StreamTitle();
+$client = new Mp3StreamTitle();
 
 // Replace with a direct radio stream link
-echo $mp3->streamTitle('http://example.com');
+echo $client->fetchStreamTitle('http://example.com');
 ```
 
 ## 👨‍💻 Author
