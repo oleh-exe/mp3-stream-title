@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace Mp3StreamTitle;
 
 use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
+use Mp3StreamTitle\Config\StreamTransport;
 use Mp3StreamTitle\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\Http\Request\StreamRequestFactory;
 use Mp3StreamTitle\Http\Response\HttpHeaderBuffer;
@@ -52,27 +53,6 @@ use Throwable;
 final class Mp3StreamTitle
 {
     /**
-     * Method extractUsingCurl.
-     *
-     * @var int
-     */
-    public const SEND_CURL = 1;
-
-    /**
-     * Method extractUsingSocket.
-     *
-     * @var int
-     */
-    public const SEND_SOCKET = 2;
-
-    /**
-     * Method extractUsingStream.
-     *
-     * @var int
-     */
-    public const SEND_FGC = 3;
-
-    /**
      * Configuration settings for the application.
      *
      * @var Mp3StreamTitleConfig|null
@@ -102,20 +82,17 @@ final class Mp3StreamTitle
      *
      * @throws Throwable
      */
-    public function streamTitle(string $streamingUrl): string
+    public function fetchStreamTitle(string $streamingUrl): string
     {
-        return match ($this->config->sendType) {
-            // Use the cURL-function.
-            self::SEND_CURL => $this->extractUsingCurl($streamingUrl),
-            // Use the Socket-function.
-            self::SEND_SOCKET => $this->extractUsingSocket($streamingUrl),
-            // Use the FGC-function.
-            self::SEND_FGC => $this->extractUsingStream($streamingUrl),
+        return match ($this->config->streamTransport) {
+            StreamTransport::CURL => $this->fetchUsingCurl($streamingUrl),
+            StreamTransport::SOCKET => $this->fetchUsingSocket($streamingUrl),
+            StreamTransport::STREAM => $this->fetchUsingStream($streamingUrl),
         };
     }
 
     /**
-     * The extractUsingCurl-function takes as an argument a direct link to the stream
+     * The fetchUsingCurl-function takes as an argument a direct link to the stream
      * of the online radio station and sends a cURL request to the stream
      * server. As a result, the function returns information about the song
      * in the following format "artist name and song name".
@@ -126,7 +103,7 @@ final class Mp3StreamTitle
      *
      * @throws RuntimeException If cURL is unavailable or metadata cannot be retrieved.
      */
-    private function extractUsingCurl(string $streamingUrl): string
+    private function fetchUsingCurl(string $streamingUrl): string
     {
         // Checking if we can use cURL.
         if (!extension_loaded('curl') || !function_exists('curl_init')) {
@@ -190,7 +167,7 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The extractUsingStream-function takes as an argument a direct link to an online
+     * The fetchUsingStream-function takes as an argument a direct link to an online
      * radio station stream and opens the stream using the set HTTP headers.
      * As a result, the function returns information about the song
      * in the following format "artist name and song name".
@@ -201,7 +178,7 @@ final class Mp3StreamTitle
      *
      * @throws Throwable
      */
-    private function extractUsingStream(string $streamingUrl): string
+    private function fetchUsingStream(string $streamingUrl): string
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
@@ -255,7 +232,7 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The extractUsingSocket-function takes as an argument a direct link to the stream
+     * The fetchUsingSocket-function takes as an argument a direct link to the stream
      * of the online radio station and sends an HTTP request to the stream
      * server. As a result, the function returns information about the song
      * in the following format "artist name and song name".
@@ -266,7 +243,7 @@ final class Mp3StreamTitle
      *
      * @throws RuntimeException|Throwable
      */
-    private function extractUsingSocket(string $streamingUrl): string
+    private function fetchUsingSocket(string $streamingUrl): string
     {
         $endpoint = StreamEndpoint::fromString($streamingUrl);
 
