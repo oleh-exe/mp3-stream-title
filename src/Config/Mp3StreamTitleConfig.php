@@ -20,19 +20,13 @@ declare(strict_types=1);
 namespace Mp3StreamTitle\Config;
 
 use InvalidArgumentException;
-use Mp3StreamTitle\Mp3StreamTitle;
 
 final readonly class Mp3StreamTitleConfig
 {
     /**
-     * Indicate which function to use to send requests to the stream-server.
-     * 1 — cURL-function.
-     * 2 — Socket-function.
-     * 3 — FGC-function.
-     *
-     * @var int
+     * @var StreamTransport $streamTransport
      */
-    public int $sendType;
+    public StreamTransport $streamTransport;
 
     /**
      * The contents of our "User-Agent" HTTP-header.
@@ -60,7 +54,7 @@ final readonly class Mp3StreamTitleConfig
     /**
      * Constructor for initializing the Mp3StreamTitle object with specified parameters.
      *
-     * @param int $sendType The method used to get the stream title. Defaults to Mp3StreamTitle::SEND_CURL.
+     * @param StreamTransport $streamTransport The transport type used for sending requests. Default is StreamTransport::CURL.
      * @param string $userAgent The user agent string for HTTP requests. Cannot be empty.
      * @param bool $showErrors A flag to indicate whether errors should be displayed. Defaults to false.
      * @param int $metaMaxLength The maximum length of metadata in bytes. Must not exceed 4080 bytes.
@@ -70,7 +64,7 @@ final readonly class Mp3StreamTitleConfig
      * @throws InvalidArgumentException If the user agent is empty or metaMaxLength exceeds 4080 bytes.
      */
     public function __construct(
-        int $sendType = Mp3StreamTitle::SEND_CURL,
+        StreamTransport $streamTransport = StreamTransport::CURL,
         string $userAgent = 'Mp3StreamTitle/1.0 (PHP 8.2; +https://github.com/oleh-exe/mp3-stream-title)',
         bool $showErrors = false,
         int $metaMaxLength = 4080
@@ -83,7 +77,7 @@ final readonly class Mp3StreamTitleConfig
             throw new InvalidArgumentException('metaMaxLength must be no more than 4080 bytes');
         }
 
-        $this->sendType = $sendType;
+        $this->streamTransport = $streamTransport;
         $this->userAgent = $userAgent;
         $this->showErrors = $showErrors;
         $this->metaMaxLength = $metaMaxLength;
