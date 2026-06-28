@@ -19,8 +19,16 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Encoding;
 
-final readonly class HtmlEntityDecoder
+final class HtmlEntityDecoder
 {
+    private const FLAGS = ENT_QUOTES | ENT_HTML5;
+
+    private const ENCODING = 'UTF-8';
+
+    /**
+     * @param string $value
+     * @return string
+     */
     public function decode(string $value): string
     {
         // If there are no entities there, we don't touch them
@@ -30,8 +38,8 @@ final readonly class HtmlEntityDecoder
 
         return html_entity_decode(
             $value,
-            ENT_QUOTES | ENT_HTML5,
-            'UTF-8'
+            self::FLAGS,
+            self::ENCODING
         );
     }
 }
