@@ -19,18 +19,34 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Encoding;
 
+use InvalidArgumentException;
 use RuntimeException;
 
 final readonly class FallbackEncodingConverter
 {
-    public function tryConvertToUtf8(
-        string $value,
-        array $encodings = [
-            'Windows-1252',
+    /**
+     * @param array $encodings
+     */
+    public function __construct(
+        private array $encodings = [
             'ISO-8859-1',
+            'Windows-1252',
             'CP1251',
         ],
-    ): string {
+    ) {
+        if ($encodings === []) {
+            throw new InvalidArgumentException(
+                'At least one encoding must be specified'
+            );
+        }
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    public function convertToUtf8(string $value): string
+    {
         if (!extension_loaded('mbstring')) {
             throw new RuntimeException(
                 'The mbstring extension is required'
@@ -41,7 +57,7 @@ final readonly class FallbackEncodingConverter
             return $value;
         }
 
-        foreach ($encodings as $encoding) {
+        foreach ($this->encodings as $encoding) {
             $converted = mb_convert_encoding(
                 $value,
                 'UTF-8',
