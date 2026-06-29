@@ -24,8 +24,11 @@ use Mp3StreamTitle\Http\Request\HeaderCollection;
 final readonly class HttpHeadersSerializer
 {
     /**
-     * @param HeaderCollection $headers
-     * @return string
+     * Converts the given collection of headers into a formatted string representation.
+     *
+     * @param HeaderCollection $headers The collection of headers to be converted.
+     *
+     * @return string The string representation of the headers, where each header is separated by a carriage return and newline.
      */
     public function toString(HeaderCollection $headers): string
     {
