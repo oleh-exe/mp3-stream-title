@@ -55,7 +55,7 @@ final class Mp3StreamTitle
     /**
      * Configuration settings for the application.
      *
-     * @var Mp3StreamTitleConfig|null
+     * @var Mp3StreamTitleConfig|null $config
      */
     private ?Mp3StreamTitleConfig $config;
 
@@ -64,6 +64,7 @@ final class Mp3StreamTitle
      * If no configuration object is provided, a default instance of Mp3StreamTitleConfig is created.
      *
      * @param Mp3StreamTitleConfig|null $config The configuration object for Mp3StreamTitle. Defaults to null.
+     *
      * @return void
      */
     public function __construct(?Mp3StreamTitleConfig $config = null)
@@ -72,13 +73,11 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The function takes as an argument a direct link to the stream of
-     * any online radio station and uses the function specified in the
-     * settings to send requests to the stream-server.
+     * Retrieves the title of the stream from the provided streaming URL using the configured transport method.
      *
-     * @param string $streamingUrl
+     * @param string $streamingUrl The URL of the streaming source to fetch the title from.
      *
-     * @return string
+     * @return string The extracted stream title from the streaming metadata.
      *
      * @throws Throwable
      */
@@ -92,16 +91,14 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The fetchUsingCurl-function takes as an argument a direct link to the stream
-     * of the online radio station and sends a cURL request to the stream
-     * server. As a result, the function returns information about the song
-     * in the following format "artist name and song name".
+     * Fetches and extracts streaming metadata from a given streaming URL using cURL.
      *
-     * @param string $streamingUrl A direct URL to the online radio stream.
+     * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string Metadata containing song information.
+     * @return string The extracted stream title from the streaming metadata.
      *
-     * @throws RuntimeException If cURL is unavailable or metadata cannot be retrieved.
+     * @throws RuntimeException If the cURL extension is not available.
+     * @throws Throwable
      */
     private function fetchUsingCurl(string $streamingUrl): string
     {
@@ -167,14 +164,11 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The fetchUsingStream-function takes as an argument a direct link to an online
-     * radio station stream and opens the stream using the set HTTP headers.
-     * As a result, the function returns information about the song
-     * in the following format "artist name and song name".
+     * Fetches and extracts streaming metadata from a given streaming URL using a stream connection.
      *
-     * @param string $streamingUrl
+     * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string
+     * @return string The extracted stream title from the streaming metadata.
      *
      * @throws Throwable
      */
@@ -232,16 +226,13 @@ final class Mp3StreamTitle
     }
 
     /**
-     * The fetchUsingSocket-function takes as an argument a direct link to the stream
-     * of the online radio station and sends an HTTP request to the stream
-     * server. As a result, the function returns information about the song
-     * in the following format "artist name and song name".
+     * Fetches and extracts streaming metadata from a given streaming URL using a socket connection.
      *
-     * @param string $streamingUrl
+     * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string
+     * @return string The extracted stream title from the streaming metadata.
      *
-     * @throws RuntimeException|Throwable
+     * @throws Throwable
      */
     private function fetchUsingSocket(string $streamingUrl): string
     {
