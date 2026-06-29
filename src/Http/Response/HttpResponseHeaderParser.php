@@ -24,6 +24,14 @@ use RuntimeException;
 
 final readonly class HttpResponseHeaderParser
 {
+    /**
+     * Parses the HTTP response header into a structured HttpResponse object.
+     *
+     * @param array $httpResponseHeader The raw HTTP response header lines.
+     *
+     * @return HttpResponse A structured representation of the HTTP response, including protocol version, status code,
+     * reason, headers, and an empty body.
+     */
     public function parse(array $httpResponseHeader): HttpResponse
     {
         [$status, $headers] = $this->parseHeaderLines($httpResponseHeader);
@@ -38,6 +46,17 @@ final readonly class HttpResponseHeaderParser
         );
     }
 
+    /**
+     * Parses raw HTTP header lines into a structured status array and headers array.
+     *
+     * @param array $lines The raw HTTP header lines to be parsed.
+     *
+     * @return array An associative array containing two elements:
+     *               - The first element is an array with status information (protocol version, status code, reason phrase).
+     *               - The second element is an associative array of normalized header names and their corresponding values.
+     *
+     * @throws RuntimeException If the HTTP status line is not found in the provided header lines.
+     */
     private function parseHeaderLines(array $lines): array
     {
         $status = null;
@@ -88,6 +107,18 @@ final readonly class HttpResponseHeaderParser
         return [$status, $headers];
     }
 
+    /**
+     * Parses the HTTP status line and extracts the protocol version, status code, and reason phrase.
+     *
+     * @param string $statusLine The HTTP status line to parse.
+     *
+     * @return array An associative array containing:
+     *               - 'version' (string): The protocol version (e.g., "1.1").
+     *               - 'code' (int): The HTTP status code (e.g., 200).
+     *               - 'reason' (string): The reason phrase (e.g., "OK").
+     *
+     * @throws RuntimeException If the status line is not in a valid format.
+     */
     private function parseStatusLine(string $statusLine): array
     {
         $statusLine = preg_replace('/\s+/', ' ', $statusLine) ?? $statusLine;
@@ -111,6 +142,14 @@ final readonly class HttpResponseHeaderParser
         ];
     }
 
+    /**
+     * Normalizes an HTTP header name by converting it to a consistent format.
+     *
+     * @param string $name The header name to normalize.
+     *
+     * @return string The normalized header name, where each segment is capitalized,
+     *                and segments are separated by hyphens.
+     */
     private function normalizeHeaderName(string $name): string
     {
         $splitName = array_map(
