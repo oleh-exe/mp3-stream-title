@@ -24,25 +24,37 @@ use InvalidArgumentException;
 final readonly class SocketConnectionConfig
 {
     /**
-     * @var float
+     * @var float $timeout
      */
     public float $timeout;
 
     /**
-     * @var int
+     * @var int $streamTimeout
      */
     public int $streamTimeout;
 
     /**
-     * @var int
+     * @var int $readChunkSize
      */
     public int $readChunkSize;
 
     /**
-     * @var int
+     * @var int $maxHeadersSize
      */
     public int $maxHeadersSize;
 
+    /**
+     * Constructor method to initialize the configuration parameters.
+     *
+     * @param float $timeout Specifies the timeout in seconds. Must be greater than 0.
+     * @param int $streamTimeout Specifies the connection timeout in seconds. Must be greater than 0.
+     * @param int $readChunkSize Specifies the read chunk size in bytes. Must be greater than 0.
+     * @param int $maxHeadersSize Specifies the maximum allowable size for headers in bytes. Must be greater than 0.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If any of the parameters have a value less than or equal to 0.
+     */
     public function __construct(
         float $timeout = 30.0,
         int $streamTimeout = 30,
