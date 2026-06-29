@@ -29,12 +29,12 @@ use Throwable;
 final class StreamConnection
 {
     /**
-     * @var resource|null
+     * @var resource|null $fp
      */
     private $fp = null;
 
     /**
-     * @var array|null The HTTP response headers from the last HTTP request, or null if no request was made.
+     * @var array|null $httpResponseHeader The HTTP response headers from the last HTTP request, or null if no request was made.
      */
     private ?array $httpResponseHeader = null;
 
@@ -45,6 +45,13 @@ final class StreamConnection
      */
     private ConnectionState $state = ConnectionState::INITIAL;
 
+    /**
+     * @param StreamUri $remoteAddress The remote address of the stream.
+     * @param StreamContextFactory $streamContext The factory for creating stream contexts.
+     * @param StreamConnectionConfig $config The configuration for the stream connection.
+     *
+     * @return void
+     */
     public function __construct(
         private readonly StreamUri $remoteAddress,
         private readonly StreamContextFactory $streamContext,
@@ -53,10 +60,14 @@ final class StreamConnection
     }
 
     /**
+     * Opens a connection to the specified remote address using a stream context
+     * and transitions the connection state accordingly.
      *
      * @return void
      *
-     * @throws Throwable
+     * @throws LogicException If the connection cannot be opened due to the current state.
+     * @throws StreamConnectionException If the stream operation fails or the connection cannot be established.
+     * @throws Throwable If an unexpected error occurs during the connection process.
      */
     public function open(): void
     {
@@ -128,8 +139,12 @@ final class StreamConnection
     }
 
     /**
-     * @return string
-     * @throws Throwable
+     * Reads a chunk of data from the stream.
+     *
+     * @return string The data read from the stream.
+     *
+     * @throws StreamConnectionException If reading fails, times out, reaches EOF unexpectedly, or produces an empty read.
+     * @throws Throwable If an unexpected error occurs during the read process.
      */
     public function read(): string
     {
@@ -142,7 +157,7 @@ final class StreamConnection
 
             if ($chunk === false) {
                 throw new StreamConnectionException(
-                    'Socket read failed'
+                    'Failed to read from stream'
                 );
             }
 
@@ -175,6 +190,8 @@ final class StreamConnection
     }
 
     /**
+     * Closes the current resource if it is open and updates the connection state.
+     *
      * @return void
      */
     public function close(): void
@@ -190,6 +207,13 @@ final class StreamConnection
         }
     }
 
+    /**
+     * Retrieves the HTTP response headers.
+     *
+     * @return array The HTTP response headers.
+     *
+     * @throws LogicException If the response headers are not available.
+     */
     public function headers(): array
     {
         if ($this->httpResponseHeader === null) {
@@ -202,7 +226,11 @@ final class StreamConnection
     }
 
     /**
+     * Validates if the current state is CONNECTED and that the stream resource is available.
+     *
      * @return void
+     *
+     * @throws LogicException If the state is not CONNECTED or the stream resource is unavailable.
      */
     private function assertConnected(): void
     {
@@ -217,14 +245,18 @@ final class StreamConnection
 
         if (!is_resource($this->fp)) {
             throw new LogicException(
-                'Socket resource is not available'
+                'Stream resource is not available'
             );
         }
     }
 
     /**
-     * @param Throwable $e
-     * @return never
+     * Handles a critical failure in the connection and transitions the connection state to an error state.
+     *
+     * @param Throwable $e The exception causing the failure.
+     *
+     * @return never Throws the provided exception and does not return.
+     *
      * @throws Throwable
      */
     private function fail(Throwable $e): never
