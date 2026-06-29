@@ -29,12 +29,12 @@ use Throwable;
 final class SocketHttpClient
 {
     /**
-     * @var SocketConnection
+     * @var SocketConnection $socket
      */
     private SocketConnection $socket;
 
     /**
-     * @var SocketConnectionConfig
+     * @var SocketConnectionConfig $config
      */
     private SocketConnectionConfig $config;
 
