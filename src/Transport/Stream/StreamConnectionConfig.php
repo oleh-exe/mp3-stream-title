@@ -24,30 +24,43 @@ use InvalidArgumentException;
 final readonly class StreamConnectionConfig
 {
     /**
-     * @var float
+     * @var float $timeout
      */
     public float $timeout;
 
     /**
-     * @var int
+     * @var int $followLocation
      */
     public int $followLocation;
 
     /**
-     * @var int
+     * @var int $maxRedirects
      */
     public int $maxRedirects;
 
     /**
-     * @var int
+     * @var int $streamTimeout
      */
     public int $streamTimeout;
 
     /**
-     * @var int
+     * @var int $readChunkSize
      */
     public int $readChunkSize;
 
+    /**
+     * Constructor method to initialize the class with specified configuration parameters.
+     *
+     * @param float $timeout Specifies the timeout in seconds for the connection. Must be a positive number.
+     * @param int $followLocation Determines whether redirects are followed. Must be 0 (disabled) or 1 (enabled).
+     * @param int $maxRedirects Specifies the maximum number of redirects allowed. Must be greater than or equal to 0.
+     * @param int $streamTimeout Specifies the connection timeout in seconds. Must be greater than 0.
+     * @param int $readChunkSize Specifies the chunk size in bytes for reading data. Must be greater than 0.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If any of the provided arguments are invalid.
+     */
     public function __construct(
         float $timeout = 30.0,
         int $followLocation = 1,
