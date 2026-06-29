@@ -28,7 +28,7 @@ use Throwable;
 final class SocketConnection
 {
     /**
-     * @var resource|null
+     * @var resource|null $fp
      */
     private $fp = null;
 
@@ -39,6 +39,14 @@ final class SocketConnection
      */
     private ConnectionState $state = ConnectionState::INITIAL;
 
+    /**
+     * Initializes a new instance of the class with the specified endpoint and connection configuration.
+     *
+     * @param StreamEndpoint $endpoint The endpoint representing the connection target.
+     * @param SocketConnectionConfig $config The configuration settings for the socket connection.
+     *
+     * @return void
+     */
     public function __construct(
         private readonly StreamEndpoint $endpoint,
         private readonly SocketConnectionConfig $config,
