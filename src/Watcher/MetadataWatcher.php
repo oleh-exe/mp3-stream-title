@@ -26,8 +26,14 @@ use Mp3StreamTitle\Mp3StreamTitle;
 final class MetadataWatcher
 {
     /**
-     * @param Mp3StreamTitle $client
-     * @param int $interval
+     * Constructor method for initializing the class with necessary dependencies and configuration.
+     *
+     * @param Mp3StreamTitle $client Instance of the Mp3StreamTitle client.
+     * @param int $interval Time interval in seconds, must be greater than zero.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If the provided interval is less than 1.
      */
     public function __construct(
         private readonly Mp3StreamTitle $client,
@@ -41,9 +47,11 @@ final class MetadataWatcher
     }
 
     /**
-     * @param string $url
+     * Watches a given URL for changes in the stream title and yields new titles as they are detected.
      *
-     * @return Generator<int, string>
+     * @param string $url The URL of the stream to monitor for title changes.
+     *
+     * @return Generator<int, string> Yields the new stream title whenever it changes.
      */
     public function watch(string $url): Generator
     {
