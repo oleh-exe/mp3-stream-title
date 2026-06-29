@@ -24,7 +24,10 @@ use Mp3StreamTitle\Http\Request\HeaderCollection;
 final class CurlHeaderSerializer
 {
     /**
-     * @return list<string>
+     * Converts the provided HeaderCollection into an array of formatted header strings.
+     *
+     * @param HeaderCollection $headers The collection of headers to be serialized.
+     * @return list<string> The array of serialized headers as strings.
      */
     public function serialize(HeaderCollection $headers): array
     {
