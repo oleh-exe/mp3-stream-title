@@ -25,11 +25,15 @@ use Throwable;
 final class FopenStreamReader
 {
     /**
-     * @param StreamConnection $stream
-     * @param string $initialBuffer
-     * @param int $targetLength
-     * @param int $maxAllowed
-     * @return string
+     * Reads data from the given stream connection until the specified target length is reached or the maximum allowed size is exceeded.
+     *
+     * @param StreamConnection $stream The stream connection to read data from.
+     * @param string $initialBuffer The initial buffer containing any pre-existing data.
+     * @param int $targetLength The desired length of the data to be read.
+     * @param int $maxAllowed The maximum allowed size of data to be read.
+     *
+     * @return string The resulting buffer containing the data read from the stream.
+     *
      * @throws Throwable
      */
     public function read(
@@ -46,12 +50,17 @@ final class FopenStreamReader
     }
 
     /**
-     * @param StreamConnection $stream
-     * @param string $initialBuffer
-     * @param int $targetLength
-     * @param int $maxAllowed
+     * Continues reading data from the provided stream connection until the target length is reached
+     * or the maximum allowed size is exceeded.
+     *
+     * @param StreamConnection $stream The stream connection to read data from.
+     * @param string &$initialBuffer A reference to the initial buffer that will be appended with read data.
+     * @param int $targetLength The required length of data to be read into the buffer.
+     * @param int $maxAllowed The maximum allowable size of the buffer to prevent excessive data reading.
+     *
      * @return void
-     * @throws Throwable
+     *
+     * @throws RuntimeException|Throwable If the buffer size exceeds the maximum allowed limit.
      */
     private function readUntilLength(
         StreamConnection $stream,
