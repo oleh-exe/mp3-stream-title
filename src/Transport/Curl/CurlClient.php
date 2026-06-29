@@ -28,42 +28,46 @@ use Mp3StreamTitle\ValueObject\StreamUri;
 readonly class CurlClient
 {
     /**
-     * @var StreamUri
+     * @var StreamUri $remoteAddress
      */
     private StreamUri $remoteAddress;
 
     /**
-     * @var HttpRequest
+     * @var HttpRequest $request
      */
     private HttpRequest $request;
 
     /**
-     * @var CurlClientConfig
+     * @var CurlClientConfig $curlClientConfig
      */
     private CurlClientConfig $curlClientConfig;
 
     /**
-     * @var CurlHeaderSerializer
+     * @var CurlHeaderSerializer $headerSerializer
      */
     private CurlHeaderSerializer $headerSerializer;
 
     /**
-     * @var IcyHeaderHandler
+     * @var IcyHeaderHandler $headerHandler
      */
     private IcyHeaderHandler $headerHandler;
 
     /**
-     * @var IcyMetadataHandler
+     * @var IcyMetadataHandler $metadataHandler
      */
     private IcyMetadataHandler $metadataHandler;
 
     /**
-     * @param StreamUri $remoteAddress
-     * @param HttpRequest $request
-     * @param CurlClientConfig $curlClientConfig
-     * @param CurlHeaderSerializer $headerSerializer
-     * @param IcyHeaderHandler $headerHandler
-     * @param IcyMetadataHandler $metadataHandler
+     * Constructor method for initializing the class with required dependencies.
+     *
+     * @param StreamUri $remoteAddress The remote address to connect to.
+     * @param HttpRequest $request The HTTP request object.
+     * @param CurlClientConfig $curlClientConfig Configuration for the CURL client.
+     * @param CurlHeaderSerializer $headerSerializer Serializer for HTTP headers.
+     * @param IcyHeaderHandler $headerHandler Handler for ICY headers.
+     * @param IcyMetadataHandler $metadataHandler Handler for ICY metadata.
+     *
+     * @return void
      */
     public function __construct(
         StreamUri $remoteAddress,
@@ -81,6 +85,13 @@ readonly class CurlClient
         $this->metadataHandler = $metadataHandler;
     }
 
+    /**
+     * Initiates a cURL session to stream data from the specified remote address.
+     *
+     * @return void
+     *
+     * @throws CurlHttpException If there is a cURL error, HTTP error, or if the session fails to initialize.
+     */
     public function getStream(): void
     {
         // Initialize the cURL session.
