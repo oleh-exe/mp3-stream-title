@@ -21,11 +21,23 @@ namespace Mp3StreamTitle\ValueObject;
 
 final readonly class StreamUri
 {
+    /**
+     * Constructor method.
+     *
+     * @param StreamEndpoint $endpoint The stream endpoint instance.
+     *
+     * @return void
+     */
     public function __construct(
         private StreamEndpoint $endpoint
     ) {
     }
 
+    /**
+     * Converts the endpoint information to a string representation.
+     *
+     * @return string The formatted remote address as a string.
+     */
     public function toString(): string
     {
         $remoteAddress = sprintf('%s://%s', $this->endpoint->getScheme()->value, $this->endpoint->getHost());
