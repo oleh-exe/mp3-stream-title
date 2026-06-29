@@ -24,12 +24,28 @@ use LogicException;
 final class IcyMetadataBuffer
 {
     /**
-     * @var string
+     * Variable to hold the buffer content.
+     *
+     * @var string $buffer
      */
     private string $buffer = '';
 
+    /**
+     * Represents the required length for a specific operation.
+     *
+     * @var int|null $requiredLength
+     */
     private ?int $requiredLength = null;
 
+    /**
+     * Appends the given string to the internal buffer and checks if the required length is met.
+     *
+     * @param string $chunk The string to append to the buffer.
+     *
+     * @return bool Returns true if the buffer length meets or exceeds the required length, false otherwise.
+     *
+     * @throws LogicException If the required length is not initialized.
+     */
     public function append(string $chunk): bool
     {
         if ($this->requiredLength === null) {
@@ -48,11 +64,25 @@ final class IcyMetadataBuffer
         return true;
     }
 
+    /**
+     * Retrieves the current buffer.
+     *
+     * @return string The content of the buffer.
+     */
     public function buffer(): string
     {
         return $this->buffer;
     }
 
+    /**
+     * Sets the required length for the current instance.
+     *
+     * @param int $requiredLength The length value to be set as required.
+     *
+     * @return void
+     *
+     * @throws LogicException If the required length has already been initialized.
+     */
     public function setRequiredLength(int $requiredLength): void
     {
         if ($this->requiredLength !== null) {
