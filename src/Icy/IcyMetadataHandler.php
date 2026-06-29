@@ -21,11 +21,25 @@ namespace Mp3StreamTitle\Icy;
 
 final class IcyMetadataHandler
 {
+    /**
+     * Constructor method for the class.
+     *
+     * @param IcyMetadataBuffer $buffer Instance of IcyMetadataBuffer.
+     *
+     * @return void
+     */
     public function __construct(
         private readonly IcyMetadataBuffer $buffer,
     ) {
     }
 
+    /**
+     * Handles the given data chunk and appends it to the buffer.
+     *
+     * @param string $chunk The data chunk to be processed.
+     *
+     * @return bool True if the buffer is full, false otherwise.
+     */
     public function handle(string $chunk): bool
     {
         return !$this->buffer->append($chunk);
