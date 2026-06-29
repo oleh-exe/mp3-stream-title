@@ -25,22 +25,22 @@ use ValueError;
 final readonly class StreamEndpoint
 {
     /**
-     * @var Scheme
+     * @var Scheme $scheme
      */
     private Scheme $scheme;
 
     /**
-     * @var string
+     * @var string $host
      */
     private string $host;
 
     /**
-     * @var int
+     * @var int $port
      */
     private int $port;
 
     /**
-     * @var string
+     * @var string $path
      */
     private string $path;
 
@@ -199,7 +199,9 @@ final readonly class StreamEndpoint
     }
 
     /**
-     * @return string
+     * Retrieves the host.
+     *
+     * @return string The host associated with this instance.
      */
     public function getHost(): string
     {
@@ -207,7 +209,9 @@ final readonly class StreamEndpoint
     }
 
     /**
-     * @return int
+     * Retrieves the port.
+     *
+     * @return int The port number associated with this instance.
      */
     public function getPort(): int
     {
@@ -215,7 +219,9 @@ final readonly class StreamEndpoint
     }
 
     /**
-     * @return string
+     * Retrieves the request target.
+     *
+     * @return string The request target associated with this instance.
      */
     public function getRequestTarget(): string
     {
