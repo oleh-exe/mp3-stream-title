@@ -24,32 +24,32 @@ use InvalidArgumentException;
 final readonly class CurlClientConfig
 {
     /**
-     * @var int
+     * @var int $timeout
      */
     public int $timeout;
 
     /**
-     * @var int
+     * @var int $connectTimeout
      */
     public int $connectTimeout;
 
     /**
-     * @var bool
+     * @var bool $followLocation
      */
     public bool $followLocation;
 
     /**
-     * @var int
+     * @var int $maxRedirects
      */
     public int $maxRedirects;
 
     /**
-     * @var bool
+     * @var bool $verifyPeer
      */
     public bool $verifyPeer;
 
     /**
-     * @var int
+     * @var int $verifyHost
      */
     public int $verifyHost;
 
