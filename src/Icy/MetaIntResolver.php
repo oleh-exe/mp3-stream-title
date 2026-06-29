@@ -24,8 +24,20 @@ use Mp3StreamTitle\Http\Response\HttpResponseParser;
 
 final class MetaIntResolver
 {
+    /**
+     * @var int|null $metaInt
+     */
     private ?int $metaInt = null;
 
+    /**
+     * Constructor method.
+     *
+     * @param HttpHeaderBuffer $httpHeaderBuffer An instance of HttpHeaderBuffer.
+     * @param HttpResponseParser $httpResponseParser An instance of HttpResponseParser.
+     * @param IcyMetaIntParser $icyMetaIntParser An instance of IcyMetaIntParser.
+     *
+     * @return void
+     */
     public function __construct(
         private readonly HttpHeaderBuffer $httpHeaderBuffer,
         private readonly HttpResponseParser $httpResponseParser,
@@ -33,6 +45,15 @@ final class MetaIntResolver
     ) {
     }
 
+    /**
+     * Resolves and retrieves the metadata interval.
+     *
+     * This method calculates the metadata interval if it has not been already resolved
+     * and returns the resolved value. The resolution process involves parsing the
+     * HTTP response buffer and extracting the interval using the IcyMetaIntParser.
+     *
+     * @return int The resolved metadata interval.
+     */
     public function resolve(): int
     {
         if ($this->metaInt !== null) {
