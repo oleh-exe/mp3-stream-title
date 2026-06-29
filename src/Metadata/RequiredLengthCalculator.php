@@ -21,6 +21,14 @@ namespace Mp3StreamTitle\Metadata;
 
 final class RequiredLengthCalculator
 {
+    /**
+     * Performs a calculation by incrementing the first parameter and adding it to the second parameter.
+     *
+     * @param int $metaInt The base integer to be incremented and used in the calculation.
+     * @param int $metaMaxLength The additional integer to be added to the incremented value.
+     *
+     * @return int The result of the calculation.
+     */
     public function calculate(
         int $metaInt,
         int $metaMaxLength
