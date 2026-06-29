@@ -23,11 +23,19 @@ use LogicException;
 
 final class HttpHeaderBuffer
 {
+    /**
+     * Variable to hold the buffer content.
+     *
+     * @var string $buffer
+     */
     private string $buffer = '';
 
     /**
-     * @param string $header
-     * @return bool
+     * Appends the given header to the internal buffer.
+     *
+     * @param string $header The header string to append.
+     *
+     * @return bool Returns true if the header is exactly "\r\n", otherwise false.
      */
     public function append(string $header): bool
     {
@@ -36,6 +44,13 @@ final class HttpHeaderBuffer
         return $header === "\r\n";
     }
 
+    /**
+     * Retrieves the content of the internal buffer.
+     *
+     * @return string Returns the content of the buffer.
+     *
+     * @throws LogicException If the buffer is empty.
+     */
     public function buffer(): string
     {
         if ($this->buffer === '') {
