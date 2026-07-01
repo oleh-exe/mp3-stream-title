@@ -35,14 +35,4 @@ enum Transport: string
     {
         return $this->value;
     }
-
-    /**
-     * Determines if the current instance represents a secure protocol.
-     *
-     * @return bool True if the current instance is secure, otherwise false.
-     */
-    public function isSecure(): bool
-    {
-        return $this === self::TLS;
-    }
 }
