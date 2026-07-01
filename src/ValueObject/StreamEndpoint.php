@@ -48,7 +48,6 @@ final readonly class StreamEndpoint
     /**
      * Initializes a new instance of the class with the specified parameters.
      *
-     * @param string $url The full URL string.
      * @param Scheme $scheme The scheme object associated with the URL.
      * @param string $host The host component of the URL.
      * @param int $port The port number for the connection.
@@ -57,7 +56,6 @@ final readonly class StreamEndpoint
      * @return void
      */
     private function __construct(
-        private string $url,
         Scheme $scheme,
         string $host,
         int $port,
@@ -96,8 +94,7 @@ final readonly class StreamEndpoint
             );
         }
 
-        if (
-            isset($parts['user'])
+        if (isset($parts['user'])
             || isset($parts['pass'])
         ) {
             throw new InvalidArgumentException(
@@ -124,8 +121,7 @@ final readonly class StreamEndpoint
             );
         }
 
-        if (
-            !is_string($host)
+        if (!is_string($host)
             || ($host === '')
         ) {
             throw new InvalidArgumentException(
@@ -139,8 +135,7 @@ final readonly class StreamEndpoint
             $port = $scheme->defaultPort();
         }
 
-        if (
-            !is_int($port)
+        if (!is_int($port)
             || ($port <= 0)
             || ($port > 65535)
         ) {
@@ -153,30 +148,18 @@ final readonly class StreamEndpoint
             $path = '/';
         }
 
-        if (
-            $query !== null
+        if ($query !== null
             && $query !== ''
         ) {
             $path = $path . '?' . $query;
         }
 
         return new self(
-            url: $url,
             scheme: $scheme,
             host: $host,
             port: $port,
             path: $path
         );
-    }
-
-    /**
-     * Retrieves the URL.
-     *
-     * @return string The URL.
-     */
-    public function getUrl(): string
-    {
-        return $this->url;
     }
 
     /**
@@ -227,15 +210,5 @@ final readonly class StreamEndpoint
     public function getRequestTarget(): string
     {
         return $this->path;
-    }
-
-    /**
-     * Determines if the current scheme is secure.
-     *
-     * @return bool True if the scheme is secure, false otherwise.
-     */
-    public function isSecure(): bool
-    {
-        return $this->scheme->isSecure();
     }
 }
