@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Example code from the "Mp3StreamTitle" project
  * Copyright 2020-2026 Oleh Kovalenko
