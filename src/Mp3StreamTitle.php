@@ -86,8 +86,8 @@ final class Mp3StreamTitle
     {
         return match ($this->config->streamTransport) {
             StreamTransport::CURL => $this->fetchUsingCurl($streamingUrl),
-            StreamTransport::SOCKET => $this->fetchUsingSocket($streamingUrl),
             StreamTransport::STREAM => $this->fetchUsingStream($streamingUrl),
+            StreamTransport::SOCKET => $this->fetchUsingSocket($streamingUrl),
         };
     }
 
