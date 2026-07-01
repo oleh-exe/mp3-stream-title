@@ -94,7 +94,8 @@ final readonly class StreamEndpoint
             );
         }
 
-        if (isset($parts['user'])
+        if (
+            isset($parts['user'])
             || isset($parts['pass'])
         ) {
             throw new InvalidArgumentException(
@@ -121,7 +122,8 @@ final readonly class StreamEndpoint
             );
         }
 
-        if (!is_string($host)
+        if (
+            !is_string($host)
             || ($host === '')
         ) {
             throw new InvalidArgumentException(
@@ -135,7 +137,8 @@ final readonly class StreamEndpoint
             $port = $scheme->defaultPort();
         }
 
-        if (!is_int($port)
+        if (
+            !is_int($port)
             || ($port <= 0)
             || ($port > 65535)
         ) {
@@ -148,7 +151,8 @@ final readonly class StreamEndpoint
             $path = '/';
         }
 
-        if ($query !== null
+        if (
+            $query !== null
             && $query !== ''
         ) {
             $path = $path . '?' . $query;
