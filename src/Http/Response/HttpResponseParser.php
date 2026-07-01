@@ -87,8 +87,7 @@ final readonly class HttpResponseParser
                 continue;
             }
 
-            if (
-                ($bestPos === null)
+            if (($bestPos === null)
                 || ($pos < $bestPos)
             ) {
                 $bestPos = $pos;
@@ -133,8 +132,7 @@ final readonly class HttpResponseParser
             }
 
             // 1. Status line (find once)
-            if (
-                ($status === null)
+            if (($status === null)
                 && str_starts_with($line, 'HTTP/')
             ) {
                 $status = $this->parseStatusLine($line);
@@ -192,13 +190,12 @@ final readonly class HttpResponseParser
         $statusLine = preg_replace('/\s+/', ' ', $statusLine) ?? $statusLine;
 
         // HTTP protocol version <= 1.1
-        if (
-            !preg_match(
-                '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
-                $statusLine,
-                $matches,
-                PREG_UNMATCHED_AS_NULL
-            )
+        if (!preg_match(
+            '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
+            $statusLine,
+            $matches,
+            PREG_UNMATCHED_AS_NULL
+        )
         ) {
             throw new RuntimeException(
                 'Could not parse the status line in the HTTP response'
