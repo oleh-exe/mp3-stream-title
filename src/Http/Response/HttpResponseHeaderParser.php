@@ -48,7 +48,7 @@ final readonly class HttpResponseHeaderParser
     }
 
     /**
-     * Parses raw HTTP header lines into a structured status array and headers array.
+     * Parses raw HTTP header lines into a structured status array and header array.
      *
      * @param array $lines The raw HTTP header lines to be parsed.
      *
@@ -73,8 +73,7 @@ final readonly class HttpResponseHeaderParser
             }
 
             // 1. Status line (find once)
-            if (
-                ($status === null)
+            if (($status === null)
                 && str_starts_with($line, 'HTTP/')
             ) {
                 $status = $this->parseStatusLine($line);
@@ -127,13 +126,12 @@ final readonly class HttpResponseHeaderParser
         $statusLine = preg_replace('/\s+/', ' ', $statusLine) ?? $statusLine;
 
         // HTTP protocol version <= 1.1
-        if (
-            !preg_match(
-                '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
-                $statusLine,
-                $matches,
-                PREG_UNMATCHED_AS_NULL
-            )
+        if (!preg_match(
+            '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
+            $statusLine,
+            $matches,
+            PREG_UNMATCHED_AS_NULL
+        )
         ) {
             throw new RuntimeException(
                 'Could not parse the status line in the HTTP response'
