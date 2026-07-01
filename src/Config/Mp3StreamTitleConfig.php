@@ -37,15 +37,6 @@ final readonly class Mp3StreamTitleConfig
     public string $userAgent;
 
     /**
-     * Enable or disable the display of error messages.
-     * false — Error messages display disabled.
-     * true — Error messages display enabled.
-     *
-     * @var bool
-     */
-    public bool $showErrors;
-
-    /**
      * Maximum metadata length in bytes.
      *
      * @var int
@@ -58,7 +49,6 @@ final readonly class Mp3StreamTitleConfig
      * @param StreamTransport $streamTransport The transport type used for sending requests.
      *                                         Default is StreamTransport::CURL.
      * @param string $userAgent The user agent string for HTTP requests. Cannot be empty.
-     * @param bool $showErrors A flag to indicate whether errors should be displayed. Defaults to false.
      * @param int $metaMaxLength The maximum length of metadata in bytes. Must not exceed 4080 bytes.
      *
      * @return void
@@ -68,7 +58,6 @@ final readonly class Mp3StreamTitleConfig
     public function __construct(
         StreamTransport $streamTransport = StreamTransport::CURL,
         string $userAgent = 'Mp3StreamTitle/1.0 (PHP 8.2; +https://github.com/oleh-exe/mp3-stream-title)',
-        bool $showErrors = false,
         int $metaMaxLength = 4080
     ) {
         if ($userAgent === '') {
@@ -81,7 +70,6 @@ final readonly class Mp3StreamTitleConfig
 
         $this->streamTransport = $streamTransport;
         $this->userAgent = $userAgent;
-        $this->showErrors = $showErrors;
         $this->metaMaxLength = $metaMaxLength;
     }
 }
