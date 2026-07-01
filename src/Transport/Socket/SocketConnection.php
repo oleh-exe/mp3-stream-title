@@ -74,8 +74,7 @@ final class SocketConnection
             );
         }
 
-        if (
-            !in_array($this->state, [ConnectionState::INITIAL, ConnectionState::CLOSED], true)
+        if (!in_array($this->state, [ConnectionState::INITIAL, ConnectionState::CLOSED], true)
         ) {
             throw new LogicException(
                 sprintf(
