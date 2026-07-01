@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -59,7 +60,8 @@ final readonly class CurlClientConfig
      * @param int $timeout The timeout duration in seconds for the request.
      * @param int $connectTimeout The connection timeout duration in seconds.
      * @param bool $followLocation Determines whether to follow redirects. Must be a boolean. Defaults to true.
-     * @param int $maxRedirects The maximum number of redirects to follow. Must be greater than or equal to -1 (where -1 indicates no limit). Defaults to 5.
+     * @param int $maxRedirects The maximum number of redirects to follow.
+     *                          Must be greater than or equal to -1 (where -1 indicates no limit). Defaults to 5.
      * @param bool $verifyPeer Whether to verify the SSL certificate of the peer.
      * @param int $verifyHost The level of host verification to perform (must be 0 or 2).
      *

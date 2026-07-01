@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -179,7 +180,8 @@ final class SocketConnection
      *
      * @return string The data read from the socket.
      *
-     * @throws SocketConnectionException If the read operation fails due to errors, timeout, EOF, or unexpected conditions.
+     * @throws SocketConnectionException If the read operation fails due to errors,
+     *                                   timeout, EOF, or unexpected conditions.
      * @throws Throwable If any other unexpected exception occurs during the operation.
      */
     public function read(): string

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -122,7 +123,10 @@ readonly class CurlClient
 
                 return strlen($header);
             },
-            CURLOPT_WRITEFUNCTION => function ($ch, string $chunk) use (
+            CURLOPT_WRITEFUNCTION => function (
+                $ch,
+                string $chunk
+            ) use (
                 &$manuallyInterrupted
             ): int {
                 $continueStreaming = $this->metadataHandler->handle($chunk);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -31,7 +32,8 @@ final class IcyMetaIntParser
      *
      * @return int The validated "icy-metaint" header value.
      *
-     * @throws RuntimeException If the "icy-metaint" header is not found, contains an invalid value, or is not a positive integer.
+     * @throws RuntimeException If the "icy-metaint" header is not found, contains an invalid value,
+     *                          or is not a positive integer.
      */
     public function getMetaInt(HttpResponse $httpResponse): int
     {

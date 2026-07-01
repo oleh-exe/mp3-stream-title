@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -28,7 +29,8 @@ final readonly class HttpHeadersSerializer
      *
      * @param HeaderCollection $headers The collection of headers to be converted.
      *
-     * @return string The string representation of the headers, where each header is separated by a carriage return and newline.
+     * @return string The string representation of the headers, where each header
+     * is separated by a carriage return and newline.
      */
     public function toString(HeaderCollection $headers): string
     {

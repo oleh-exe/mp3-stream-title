@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -191,12 +192,14 @@ final readonly class HttpResponseParser
         $statusLine = preg_replace('/\s+/', ' ', $statusLine) ?? $statusLine;
 
         // HTTP protocol version <= 1.1
-        if (!preg_match(
-            '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
-            $statusLine,
-            $matches,
-            PREG_UNMATCHED_AS_NULL
-        )) {
+        if (
+            !preg_match(
+                '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
+                $statusLine,
+                $matches,
+                PREG_UNMATCHED_AS_NULL
+            )
+        ) {
             throw new RuntimeException(
                 'Could not parse the status line in the HTTP response'
             );

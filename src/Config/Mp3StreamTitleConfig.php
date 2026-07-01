@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -54,7 +55,8 @@ final readonly class Mp3StreamTitleConfig
     /**
      * Constructor for initializing the Mp3StreamTitle object with specified parameters.
      *
-     * @param StreamTransport $streamTransport The transport type used for sending requests. Default is StreamTransport::CURL.
+     * @param StreamTransport $streamTransport The transport type used for sending requests.
+     *                                         Default is StreamTransport::CURL.
      * @param string $userAgent The user agent string for HTTP requests. Cannot be empty.
      * @param bool $showErrors A flag to indicate whether errors should be displayed. Defaults to false.
      * @param int $metaMaxLength The maximum length of metadata in bytes. Must not exceed 4080 bytes.

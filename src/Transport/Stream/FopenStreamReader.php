@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -25,7 +26,8 @@ use Throwable;
 final class FopenStreamReader
 {
     /**
-     * Reads data from the given stream connection until the specified target length is reached or the maximum allowed size is exceeded.
+     * Reads data from the given stream connection until the specified target length is reached
+     * or the maximum allowed size is exceeded.
      *
      * @param StreamConnection $stream The stream connection to read data from.
      * @param string $initialBuffer The initial buffer containing any pre-existing data.

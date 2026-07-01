@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -31,8 +32,10 @@ final class IcyHeaderHandler
      * @param HttpHeaderBuffer $httpHeaderBuffer An instance of HttpHeaderBuffer managing HTTP headers.
      * @param MetaIntResolver $metaIntResolver An instance of MetaIntResolver for resolving metadata intervals.
      * @param IcyMetadataBuffer $buffer An instance of IcyMetadataBuffer for handling metadata.
-     * @param RequiredLengthCalculator $calculator An instance of RequiredLengthCalculator for calculating required lengths.
-     * @param Mp3StreamTitleConfig $config An instance of Mp3StreamTitleConfig holding configuration for MP3 stream titles.
+     * @param RequiredLengthCalculator $calculator An instance of RequiredLengthCalculator
+     *                                             for calculating required lengths.
+     * @param Mp3StreamTitleConfig $config An instance of Mp3StreamTitleConfig holding configuration
+     *                                     for MP3 stream titles.
      *
      * @return void
      */

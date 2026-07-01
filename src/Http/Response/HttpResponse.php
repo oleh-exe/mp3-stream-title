@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -40,5 +41,6 @@ final readonly class HttpResponse
         public string $reason,
         public HeaderCollection $headers,
         public string $body,
-    ) {}
+    ) {
+    }
 }

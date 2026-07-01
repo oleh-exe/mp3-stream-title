@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -53,7 +54,8 @@ final class SocketStreamReader
      * Continues reading data from a socket connection until the target length is reached.
      *
      * @param SocketConnection $socket The socket connection to read data from.
-     * @param string &$initialBuffer A reference to the buffer containing previously read data, which will be updated with additional data.
+     * @param string &$initialBuffer A reference to the buffer containing previously read data,
+     *                               which will be updated with additional data.
      * @param int $targetLength The target length of data to be reached within the buffer.
      * @param int $maxAllowed The maximum allowed length for the buffer, beyond which an exception will be thrown.
      *

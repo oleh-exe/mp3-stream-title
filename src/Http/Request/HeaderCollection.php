@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -216,7 +217,8 @@ final readonly class HeaderCollection
 
     /**
      * Normalizes the header name to a consistent format.
-     * Converts each part of the header name, separated by hyphens, to have an initial uppercase letter while the rest are lowercase.
+     * Converts each part of the header name, separated by hyphens,
+     * to have an initial uppercase letter while the rest are lowercase.
      *
      * @param string $name The header name to be normalized.
      *

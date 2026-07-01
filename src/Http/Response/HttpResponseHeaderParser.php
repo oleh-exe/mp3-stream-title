@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -52,8 +53,10 @@ final readonly class HttpResponseHeaderParser
      * @param array $lines The raw HTTP header lines to be parsed.
      *
      * @return array An associative array containing two elements:
-     *               - The first element is an array with status information (protocol version, status code, reason phrase).
-     *               - The second element is an associative array of normalized header names and their corresponding values.
+     *               - The first element is an array with status information
+     *                 (protocol version, status code, reason phrase).
+     *               - The second element is an associative array of normalized header names
+     *                 and their corresponding values.
      *
      * @throws RuntimeException If the HTTP status line is not found in the provided header lines.
      */
@@ -124,12 +127,14 @@ final readonly class HttpResponseHeaderParser
         $statusLine = preg_replace('/\s+/', ' ', $statusLine) ?? $statusLine;
 
         // HTTP protocol version <= 1.1
-        if (!preg_match(
-            '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
-            $statusLine,
-            $matches,
-            PREG_UNMATCHED_AS_NULL
-        )) {
+        if (
+            !preg_match(
+                '#^HTTP/(\d\.\d)\s+(\d{3})(?:\s+(.*))?$#',
+                $statusLine,
+                $matches,
+                PREG_UNMATCHED_AS_NULL
+            )
+        ) {
             throw new RuntimeException(
                 'Could not parse the status line in the HTTP response'
             );

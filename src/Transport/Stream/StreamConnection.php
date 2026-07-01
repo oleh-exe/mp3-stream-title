@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2026 Oleh Kovalenko
  *
@@ -34,7 +35,8 @@ final class StreamConnection
     private $fp = null;
 
     /**
-     * @var array|null $httpResponseHeader The HTTP response headers from the last HTTP request, or null if no request was made.
+     * @var array|null $httpResponseHeader The HTTP response headers from the last HTTP request,
+     *                                     or null if no request was made.
      */
     private ?array $httpResponseHeader = null;
 
@@ -143,7 +145,8 @@ final class StreamConnection
      *
      * @return string The data read from the stream.
      *
-     * @throws StreamConnectionException If reading fails, times out, reaches EOF unexpectedly, or produces an empty read.
+     * @throws StreamConnectionException If reading fails, times out, reaches EOF unexpectedly,
+     *                                   or produces an empty read.
      * @throws Throwable If an unexpected error occurs during the read process.
      */
     public function read(): string
