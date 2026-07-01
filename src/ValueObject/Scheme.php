@@ -27,16 +27,6 @@ enum Scheme: string
     case HTTPS = 'https';
 
     /**
-     * Determines if the protocol is secure.
-     *
-     * @return bool True if the protocol is secure (e.g., HTTPS), false otherwise.
-     */
-    public function isSecure(): bool
-    {
-        return $this === self::HTTPS;
-    }
-
-    /**
      * Converts the protocol to its corresponding transport layer protocol.
      *
      * @return Transport The transport layer protocol associated with the protocol (e.g., TCP for HTTP, TLS for HTTPS).
