@@ -24,7 +24,10 @@ use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Http\Response\HttpHeaderBuffer;
 use Mp3StreamTitle\Metadata\RequiredLengthCalculator;
 
-final class IcyHeaderHandler
+/**
+ * Handles HTTP headers for ICY streams and manages metadata intervals and buffer updates.
+ */
+final readonly class IcyHeaderHandler
 {
     /**
      * Constructor method for initializing the class with required dependencies.
@@ -40,11 +43,11 @@ final class IcyHeaderHandler
      * @return void
      */
     public function __construct(
-        private readonly HttpHeaderBuffer $httpHeaderBuffer,
-        private readonly MetaIntResolver $metaIntResolver,
-        private readonly IcyMetadataBuffer $buffer,
-        private readonly RequiredLengthCalculator $calculator,
-        private readonly Mp3StreamTitleConfig $config,
+        private HttpHeaderBuffer $httpHeaderBuffer,
+        private MetaIntResolver $metaIntResolver,
+        private IcyMetadataBuffer $buffer,
+        private RequiredLengthCalculator $calculator,
+        private Mp3StreamTitleConfig $config,
     ) {
     }
 
