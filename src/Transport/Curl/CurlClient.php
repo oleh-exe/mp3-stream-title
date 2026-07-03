@@ -26,7 +26,10 @@ use Mp3StreamTitle\Icy\IcyHeaderHandler;
 use Mp3StreamTitle\Icy\IcyMetadataHandler;
 use Mp3StreamTitle\ValueObject\StreamUri;
 
-readonly class CurlClient
+/**
+ * A client for performing HTTP requests and streaming data using cURL.
+ */
+final readonly class CurlClient
 {
     /**
      * @var StreamUri $remoteAddress
