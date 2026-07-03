@@ -20,7 +20,10 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Icy;
 
-final class IcyMetadataHandler
+/**
+ * Represents a handler for processing and managing Icy metadata chunks.
+ */
+final readonly class IcyMetadataHandler
 {
     /**
      * Constructor method for the class.
@@ -30,7 +33,7 @@ final class IcyMetadataHandler
      * @return void
      */
     public function __construct(
-        private readonly IcyMetadataBuffer $buffer,
+        private IcyMetadataBuffer $buffer,
     ) {
     }
 
