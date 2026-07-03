@@ -23,6 +23,9 @@ namespace Mp3StreamTitle\Transport\Stream;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Handles reading data from a stream connection, ensuring data length constraints are respected.
+ */
 final class FopenStreamReader
 {
     /**

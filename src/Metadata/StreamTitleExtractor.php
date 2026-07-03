@@ -22,6 +22,9 @@ namespace Mp3StreamTitle\Metadata;
 
 use RuntimeException;
 
+/**
+ * A utility class for extracting the StreamTitle value from ICY metadata.
+ */
 final readonly class StreamTitleExtractor
 {
     /**

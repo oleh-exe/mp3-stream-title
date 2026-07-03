@@ -23,10 +23,21 @@ namespace Mp3StreamTitle\Encoding;
 use InvalidArgumentException;
 use RuntimeException;
 
+/**
+ * A class that provides functionality to convert a given string to UTF-8 encoding
+ * using a list of fallback encodings. This is useful in scenarios where the
+ * source encoding of the input string is unknown or unreliable.
+ */
 final readonly class FallbackEncodingConverter
 {
     /**
-     * @param array $encodings
+     * Constructor method for initializing encodings.
+     *
+     * @param array $encodings An array of encoding schemes. Must contain at least one encoding.
+     *
+     * @return void
+     *
+     * @throws InvalidArgumentException If no encodings are provided.
      */
     public function __construct(
         private array $encodings = [
@@ -43,8 +54,13 @@ final readonly class FallbackEncodingConverter
     }
 
     /**
-     * @param string $value
-     * @return string
+     * Converts the input string to UTF-8 encoding.
+     *
+     * @param string $value The input string to be converted.
+     *
+     * @return string The UTF-8 encoded string. If conversion fails, returns the original string.
+     *
+     * @throws RuntimeException If the mbstring extension is not loaded.
      */
     public function convertToUtf8(string $value): string
     {

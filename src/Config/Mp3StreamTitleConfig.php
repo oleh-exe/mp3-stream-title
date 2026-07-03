@@ -22,6 +22,10 @@ namespace Mp3StreamTitle\Config;
 
 use InvalidArgumentException;
 
+/**
+ * Represents the configuration for an MP3 stream title, including HTTP transport,
+ * user agent, and metadata length constraints.
+ */
 final readonly class Mp3StreamTitleConfig
 {
     /**
@@ -32,14 +36,14 @@ final readonly class Mp3StreamTitleConfig
     /**
      * The contents of our "User-Agent" HTTP-header.
      *
-     * @var string
+     * @var string $userAgent
      */
     public string $userAgent;
 
     /**
      * Maximum metadata length in bytes.
      *
-     * @var int
+     * @var int $metaMaxLength
      */
     public int $metaMaxLength;
 

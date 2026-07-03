@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\ValueObject;
 
+/**
+ * Represents a URI constructed from a stream endpoint.
+ */
 final readonly class StreamUri
 {
     /**

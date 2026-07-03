@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Transport\Socket;
 
 use InvalidArgumentException;
 
+/**
+ * Represents the configuration for a socket connection.
+ *
+ * This class defines properties and validates parameters required to manage
+ * socket connection behavior, including timeouts and buffer sizes.
+ */
 final readonly class SocketConnectionConfig
 {
     /**

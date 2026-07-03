@@ -20,6 +20,11 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Config;
 
+/**
+ * Represents different methods for transporting streams.
+ *
+ * This enum defines available strategies for handling stream I/O operations.
+ */
 enum StreamTransport
 {
     case CURL;

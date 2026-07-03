@@ -22,10 +22,13 @@ namespace Mp3StreamTitle\Http\Request;
 
 use Mp3StreamTitle\Http\Serializer\HttpHeadersSerializer;
 
+/**
+ * Responsible for serializing an HttpRequest object into its string representation.
+ */
 final readonly class HttpRequestSerializer
 {
     /**
-     * @var HttpHeadersSerializer
+     * @var HttpHeadersSerializer $headersSerializer
      */
     private HttpHeadersSerializer $headersSerializer;
 

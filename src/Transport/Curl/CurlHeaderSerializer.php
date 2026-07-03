@@ -22,6 +22,9 @@ namespace Mp3StreamTitle\Transport\Curl;
 
 use Mp3StreamTitle\Http\Request\HeaderCollection;
 
+/**
+ * Handles the serialization of HTTP headers into a format suitable for cURL requests.
+ */
 final class CurlHeaderSerializer
 {
     /**

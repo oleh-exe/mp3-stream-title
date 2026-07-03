@@ -22,6 +22,13 @@ namespace Mp3StreamTitle\Exception;
 
 use RuntimeException;
 
+/**
+ * Represents an exception thrown when a failure occurs during a stream connection operation.
+ *
+ * This exception is specifically intended to signal issues related to establishing or maintaining
+ * a connection for a stream. It extends the RuntimeException, indicating that it represents an
+ * unchecked exception.
+ */
 final class StreamConnectionException extends RuntimeException
 {
 }

@@ -20,6 +20,10 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Http\Enum;
 
+/**
+ * Represents HTTP methods as string-backed enum cases.
+ * Provides a set of predefined constants for common HTTP methods.
+ */
 enum HttpMethod: string
 {
     case GET = 'GET';

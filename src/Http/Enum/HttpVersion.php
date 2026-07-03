@@ -20,6 +20,12 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Http\Enum;
 
+/**
+ * Enum representing HTTP protocol versions.
+ *
+ * This enumeration defines supported versions of the HTTP protocol
+ * as string-backed cases.
+ */
 enum HttpVersion: string
 {
     case HTTP_1_0 = '1.0';

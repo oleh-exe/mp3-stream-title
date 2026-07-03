@@ -22,6 +22,13 @@ namespace Mp3StreamTitle\Exception;
 
 use RuntimeException;
 
+/**
+ * Represents an exception thrown when a socket connection error occurs.
+ *
+ * This exception is typically used to encapsulate errors related to
+ * establishing or maintaining socket connections. It provides a
+ * way to handle socket-specific issues in an application.
+ */
 final class SocketConnectionException extends RuntimeException
 {
 }

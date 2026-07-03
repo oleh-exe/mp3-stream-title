@@ -24,25 +24,28 @@ use InvalidArgumentException;
 use Mp3StreamTitle\Http\Enum\HttpMethod;
 use Mp3StreamTitle\Http\Enum\HttpVersion;
 
+/**
+ * Represents an HTTP request with a method, target URI, version, and headers.
+ */
 final readonly class HttpRequest
 {
     /**
-     * @var HttpMethod
+     * @var HttpMethod $method
      */
     private HttpMethod $method;
 
     /**
-     * @var string
+     * @var string $target
      */
     private string $target;
 
     /**
-     * @var HttpVersion
+     * @var HttpVersion $httpVersion
      */
     private HttpVersion $httpVersion;
 
     /**
-     * @var HeaderCollection
+     * @var HeaderCollection $headers
      */
     private HeaderCollection $headers;
 

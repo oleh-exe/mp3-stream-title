@@ -22,6 +22,10 @@ namespace Mp3StreamTitle\Http\Response;
 
 use LogicException;
 
+/**
+ * Represents a buffer for HTTP headers, allowing headers to
+ * be appended and retrieved as a single string.
+ */
 final class HttpHeaderBuffer
 {
     /**

@@ -23,6 +23,15 @@ namespace Mp3StreamTitle\Icy;
 use Mp3StreamTitle\Http\Response\HttpHeaderBuffer;
 use Mp3StreamTitle\Http\Response\HttpResponseParser;
 
+/**
+ * Resolves the metadata interval from HTTP responses.
+ *
+ * The MetaIntResolver class is responsible for determining the metadata
+ * interval from an HTTP response. This interval denotes the frequency
+ * at which metadata is embedded within an HTTP stream. It relies on
+ * dependencies to parse HTTP headers and responses and extract the
+ * interval information.
+ */
 final class MetaIntResolver
 {
     /**

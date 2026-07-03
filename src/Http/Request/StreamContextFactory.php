@@ -23,6 +23,13 @@ namespace Mp3StreamTitle\Http\Request;
 use Mp3StreamTitle\Http\Serializer\HttpHeadersSerializer;
 use Mp3StreamTitle\Transport\Stream\StreamConnectionConfig;
 
+/**
+ * A factory class for creating stream context resources for HTTP requests.
+ *
+ * Combines HTTP request data, serialized headers, and connection configuration
+ * to generate a stream context resource that can be used in stream-related
+ * operations.
+ */
 final readonly class StreamContextFactory
 {
     public function __construct(
@@ -33,7 +40,11 @@ final readonly class StreamContextFactory
     }
 
     /**
-     * @return resource
+     * Creates and returns a configured stream context based on the current
+     * request and configuration settings.
+     *
+     * @return resource Returns a stream context resource initialized with
+     *                  HTTP-specific options such as method, headers, and timeout.
      */
     public function create()
     {

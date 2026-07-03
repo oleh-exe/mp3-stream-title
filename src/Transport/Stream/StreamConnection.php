@@ -27,6 +27,10 @@ use Mp3StreamTitle\Http\Request\StreamContextFactory;
 use Mp3StreamTitle\ValueObject\StreamUri;
 use Throwable;
 
+/**
+ * Represents a connection to a remote stream, managing its lifecycle,
+ * including creation, reading, and closure operations.
+ */
 final class StreamConnection
 {
     /**

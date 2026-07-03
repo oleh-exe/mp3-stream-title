@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\ValueObject;
 
+/**
+ * Represents a network protocol scheme.
+ */
 enum Scheme: string
 {
     case HTTP = 'http';

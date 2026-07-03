@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Transport\Curl;
 
 use InvalidArgumentException;
 
+/**
+ * Represents the configuration options for a cURL client.
+ *
+ * This class allows the user to configure various CURL options such as timeouts,
+ * redirect handling, and SSL verification.
+ */
 final readonly class CurlClientConfig
 {
     /**

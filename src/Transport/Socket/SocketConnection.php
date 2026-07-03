@@ -26,6 +26,10 @@ use Mp3StreamTitle\Http\Enum\ConnectionState;
 use Mp3StreamTitle\ValueObject\StreamEndpoint;
 use Throwable;
 
+/**
+ * Represents a socket connection to a specified endpoint, including handling connection,
+ * reading, writing, and managing the state of the connection.
+ */
 final class SocketConnection
 {
     /**

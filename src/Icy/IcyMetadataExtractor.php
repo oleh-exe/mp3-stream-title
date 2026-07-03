@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Icy;
 
 use RuntimeException;
 
+/**
+ * A utility class for extracting ICY metadata from a stream buffer.
+ *
+ * ICY (Internet Radio) metadata is commonly embedded in streaming
+ * audio and provides information such as the current track title.
+ */
 final class IcyMetadataExtractor
 {
     /**

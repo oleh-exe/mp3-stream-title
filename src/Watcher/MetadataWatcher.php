@@ -24,6 +24,9 @@ use Generator;
 use InvalidArgumentException;
 use Mp3StreamTitle\Mp3StreamTitle;
 
+/**
+ * Class responsible for monitoring metadata changes in an MP3 stream.
+ */
 final class MetadataWatcher
 {
     /**

@@ -22,6 +22,10 @@ namespace Mp3StreamTitle\Icy;
 
 use LogicException;
 
+/**
+ * A class responsible for managing a buffer of metadata and handling operations
+ * related to appending data and ensuring a required buffer length is met.
+ */
 final class IcyMetadataBuffer
 {
     /**

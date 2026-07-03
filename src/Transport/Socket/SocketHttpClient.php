@@ -27,6 +27,9 @@ use Mp3StreamTitle\Http\Response\HttpResponseParser;
 use RuntimeException;
 use Throwable;
 
+/**
+ * A client for sending HTTP requests using a socket connection.
+ */
 final class SocketHttpClient
 {
     /**

@@ -22,6 +22,9 @@ namespace Mp3StreamTitle\Http\Serializer;
 
 use Mp3StreamTitle\Http\Request\HeaderCollection;
 
+/**
+ * Serializes HTTP headers into a specific string format.
+ */
 final readonly class HttpHeadersSerializer
 {
     /**

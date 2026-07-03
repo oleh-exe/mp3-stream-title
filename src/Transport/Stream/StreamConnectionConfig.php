@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Transport\Stream;
 
 use InvalidArgumentException;
 
+/**
+ * Represents the configuration for a stream connection.
+ * This class encapsulates parameters used to control various aspects
+ * of a stream connection, including timeouts, redirect handling,
+ * and data read chunk size.
+ */
 final readonly class StreamConnectionConfig
 {
     /**

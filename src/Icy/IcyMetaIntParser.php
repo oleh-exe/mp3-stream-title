@@ -23,6 +23,11 @@ namespace Mp3StreamTitle\Icy;
 use Mp3StreamTitle\Http\Response\HttpResponse;
 use RuntimeException;
 
+/**
+ * A utility class responsible for parsing and validating the "icy-metaint" header
+ * from HTTP response objects. This value is commonly used in the context of
+ * streaming protocols to define the interval at which metadata is inserted.
+ */
 final class IcyMetaIntParser
 {
     /**

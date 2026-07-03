@@ -20,6 +20,10 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\Metadata;
 
+/**
+ * A calculator class responsible for determining the required length
+ * based on specific input parameters.
+ */
 final class RequiredLengthCalculator
 {
     /**

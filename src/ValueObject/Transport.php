@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace Mp3StreamTitle\ValueObject;
 
+/**
+ * Enum representing different transport protocols.
+ */
 enum Transport: string
 {
     case TCP = 'tcp';

@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Http\Response;
 
 use Mp3StreamTitle\Http\Request\HeaderCollection;
 
+/**
+ * Represents an immutable HTTP response.
+ *
+ * This class encapsulates essential information about an HTTP response,
+ * including protocol version, status code, reason phrase, headers, and body content.
+ */
 final readonly class HttpResponse
 {
     /**

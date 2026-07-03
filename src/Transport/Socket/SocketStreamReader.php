@@ -23,6 +23,11 @@ namespace Mp3StreamTitle\Transport\Socket;
 use RuntimeException;
 use Throwable;
 
+/**
+ * A utility class designed to handle reading data from a socket connection.
+ * It provides methods to read data until a specified length is achieved, with
+ * constraints on the maximum allowed buffer size to prevent overflows.
+ */
 final class SocketStreamReader
 {
     /**

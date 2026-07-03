@@ -51,6 +51,11 @@ use Mp3StreamTitle\ValueObject\StreamUri;
 use RuntimeException;
 use Throwable;
 
+/**
+ * Represents a service for fetching and extracting the titles of MP3 streams
+ * from streaming sources using various transport methods such as cURL, streams,
+ * or sockets.
+ */
 final class Mp3StreamTitle
 {
     /**

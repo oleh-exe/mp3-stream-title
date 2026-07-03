@@ -22,10 +22,16 @@ namespace Mp3StreamTitle\Http\Request;
 
 use InvalidArgumentException;
 
+/**
+ * Represents a collection of HTTP headers.
+ *
+ * This class provides functionality to store, retrieve, validate, and manipulate
+ * HTTP headers in a normalized and consistent format.
+ */
 final readonly class HeaderCollection
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string> $headers
      */
     private array $headers;
 

@@ -22,6 +22,12 @@ namespace Mp3StreamTitle\Exception;
 
 use RuntimeException;
 
+/**
+ * Represents an exception thrown when a cURL-related error occurs during an HTTP request.
+ *
+ * This exception extends the RuntimeException and provides a way to handle
+ * errors specifically related to cURL operations in an HTTP context.
+ */
 final class CurlHttpException extends RuntimeException
 {
 }

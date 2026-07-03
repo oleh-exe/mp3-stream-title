@@ -23,6 +23,9 @@ namespace Mp3StreamTitle\ValueObject;
 use InvalidArgumentException;
 use ValueError;
 
+/**
+ * Represents a stream endpoint with a specified scheme, host, port, and path.
+ */
 final readonly class StreamEndpoint
 {
     /**

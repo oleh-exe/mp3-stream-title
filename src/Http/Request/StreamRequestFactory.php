@@ -25,6 +25,9 @@ use Mp3StreamTitle\Http\Enum\HttpMethod;
 use Mp3StreamTitle\Http\Enum\HttpVersion;
 use Mp3StreamTitle\ValueObject\StreamEndpoint;
 
+/**
+ * Factory class for creating HTTP requests tailored for streaming scenarios.
+ */
 final class StreamRequestFactory
 {
     /**

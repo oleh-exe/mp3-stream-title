@@ -23,6 +23,10 @@ namespace Mp3StreamTitle\Http\Response;
 use Mp3StreamTitle\Http\Request\HeaderCollection;
 use RuntimeException;
 
+/**
+ * A class responsible for parsing raw HTTP response strings into structured objects.
+ * This class handles the extraction and normalization of headers, status line, and body.
+ */
 final readonly class HttpResponseParser
 {
     /**

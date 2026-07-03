@@ -23,6 +23,9 @@ namespace Mp3StreamTitle\Http\Response;
 use Mp3StreamTitle\Http\Request\HeaderCollection;
 use RuntimeException;
 
+/**
+ * A final, readonly class for parsing HTTP response headers into a structured format.
+ */
 final readonly class HttpResponseHeaderParser
 {
     /**
