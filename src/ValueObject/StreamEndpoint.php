@@ -141,8 +141,7 @@ final readonly class StreamEndpoint
         }
 
         if (
-            !is_int($port)
-            || ($port <= 0)
+            ($port <= 0)
             || ($port > 65535)
         ) {
             throw new InvalidArgumentException(
