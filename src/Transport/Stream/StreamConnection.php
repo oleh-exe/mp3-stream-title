@@ -34,12 +34,12 @@ use Throwable;
 final class StreamConnection
 {
     /**
-     * @var resource|null $fp
+     * @var resource $fp
      */
-    private $fp = null;
+    private $fp;
 
     /**
-     * @var array|null $httpResponseHeader The HTTP response headers from the last HTTP request,
+     * @var array<int, string>|null $httpResponseHeader The HTTP response headers from the last HTTP request,
      *                                     or null if no request was made.
      */
     private ?array $httpResponseHeader = null;
@@ -129,12 +129,6 @@ final class StreamConnection
                 );
             }
 
-            if (!isset($http_response_header)) {
-                throw new StreamConnectionException(
-                    'HTTP response headers are not available'
-                );
-            }
-
             // TODO: This feature has been DEPRECATED as of PHP 8.5.0
             $this->httpResponseHeader = $http_response_header;
             $this->fp = $fp;
@@ -207,8 +201,6 @@ final class StreamConnection
             fclose($this->fp);
         }
 
-        $this->fp = null;
-
         if ($this->state !== ConnectionState::ERROR) {
             $this->state = ConnectionState::CLOSED;
         }
@@ -217,7 +209,7 @@ final class StreamConnection
     /**
      * Retrieves the HTTP response headers.
      *
-     * @return array The HTTP response headers.
+     * @return array<int, string> The HTTP response headers.
      *
      * @throws LogicException If the response headers are not available.
      */
@@ -272,7 +264,6 @@ final class StreamConnection
             fclose($this->fp);
         }
 
-        $this->fp = null;
         $this->state = ConnectionState::ERROR;
 
         throw $e;
