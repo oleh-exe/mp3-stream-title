@@ -36,7 +36,7 @@ final readonly class HeaderCollection
     private array $headers;
 
     /**
-     * @param array $headers An array of headers to be normalized and validated.
+     * @param array<string, string> $headers An array of headers to be normalized and validated.
      *
      * @return void
      */
@@ -48,7 +48,7 @@ final readonly class HeaderCollection
     /**
      * Retrieves all the headers.
      *
-     * @return array An associative array containing all headers.
+     * @return array<string, string> An associative array containing all headers.
      */
     public function all(): array
     {
@@ -134,11 +134,11 @@ final readonly class HeaderCollection
      * validates their format, and normalizes header names for consistent usage.
      * It also checks for and prevents duplicate headers.
      *
-     * @param array $headers An associative array of headers where the key
+     * @param array<string, string> $headers An associative array of headers where the key
      *                       represents the header name and the value
      *                       represents the header value.
      *
-     * @return array An associative array of normalized and validated headers.
+     * @return array<string, string> An associative array of normalized and validated headers.
      *
      * @throws InvalidArgumentException If a header name is not a string,
      *                                  if a header value is not a string,
@@ -150,18 +150,6 @@ final readonly class HeaderCollection
         $normalized = [];
 
         foreach ($headers as $name => $value) {
-            if (!is_string($name)) {
-                throw new InvalidArgumentException(
-                    'Header names must be strings'
-                );
-            }
-
-            if (!is_string($value)) {
-                throw new InvalidArgumentException(
-                    sprintf('Header "%s" value must be a string', $name)
-                );
-            }
-
             $this->assertValidHeaderName($name);
             $this->assertValidHeaderValue($value);
 
