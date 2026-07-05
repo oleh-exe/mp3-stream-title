@@ -33,9 +33,9 @@ use Throwable;
 final class SocketConnection
 {
     /**
-     * @var resource|null $fp
+     * @var resource $fp
      */
-    private $fp = null;
+    private $fp;
 
     /**
      * The current state of the connection.
@@ -242,8 +242,6 @@ final class SocketConnection
             fclose($this->fp);
         }
 
-        $this->fp = null;
-
         if ($this->state !== ConnectionState::ERROR) {
             $this->state = ConnectionState::CLOSED;
         }
@@ -290,7 +288,6 @@ final class SocketConnection
             fclose($this->fp);
         }
 
-        $this->fp = null;
         $this->state = ConnectionState::ERROR;
 
         throw $e;
