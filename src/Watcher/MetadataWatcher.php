@@ -27,7 +27,7 @@ use Mp3StreamTitle\Mp3StreamTitle;
 /**
  * Class responsible for monitoring metadata changes in an MP3 stream.
  */
-final class MetadataWatcher
+final readonly class MetadataWatcher
 {
     /**
      * Constructor method for initializing the class with necessary dependencies and configuration.
@@ -40,8 +40,8 @@ final class MetadataWatcher
      * @throws InvalidArgumentException If the provided interval is less than 1.
      */
     public function __construct(
-        private readonly Mp3StreamTitle $client,
-        private readonly int $interval
+        private Mp3StreamTitle $client,
+        private int $interval
     ) {
         if ($interval < 1) {
             throw new InvalidArgumentException(
