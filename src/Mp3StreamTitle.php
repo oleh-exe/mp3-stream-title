@@ -61,9 +61,9 @@ final class Mp3StreamTitle
     /**
      * Configuration settings for the application.
      *
-     * @var Mp3StreamTitleConfig|null $config
+     * @var Mp3StreamTitleConfig $config
      */
-    private ?Mp3StreamTitleConfig $config;
+    private Mp3StreamTitleConfig $config;
 
     /**
      * Constructor to initialize the Mp3StreamTitle class with a configuration object.
