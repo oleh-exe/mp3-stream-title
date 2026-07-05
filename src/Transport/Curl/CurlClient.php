@@ -117,7 +117,7 @@ final readonly class CurlClient
             CURLOPT_TIMEOUT => $this->curlClientConfig->timeout,
             CURLOPT_CONNECTTIMEOUT => $this->curlClientConfig->connectTimeout,
             CURLOPT_HTTPHEADER => $this->headerSerializer->serialize(
-                $this->request->headers()
+                $this->request->headers()->without('Host')
             ),
             CURLOPT_FOLLOWLOCATION => $this->curlClientConfig->followLocation,
             CURLOPT_MAXREDIRS => $this->curlClientConfig->maxRedirects,
