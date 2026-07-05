@@ -51,7 +51,7 @@ final readonly class StreamConnectionConfig
     public int $streamTimeout;
 
     /**
-     * @var int $readChunkSize
+     * @var positive-int $readChunkSize
      */
     public int $readChunkSize;
 
