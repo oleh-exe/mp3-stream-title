@@ -33,7 +33,7 @@ final readonly class FallbackEncodingConverter
     /**
      * Constructor method for initializing encodings.
      *
-     * @param array $encodings An array of encoding schemes. Must contain at least one encoding.
+     * @param array<int, string> $encodings An array of encoding schemes. Must contain at least one encoding.
      *
      * @return void
      *
@@ -80,6 +80,12 @@ final readonly class FallbackEncodingConverter
                 'UTF-8',
                 $encoding
             );
+
+            if ($converted === false) {
+                throw new RuntimeException(
+                    sprintf('Failed to convert string to UTF-8 using encoding "%s"', $encoding)
+                );
+            }
 
             if (mb_check_encoding($converted, 'UTF-8')) {
                 return $converted;
