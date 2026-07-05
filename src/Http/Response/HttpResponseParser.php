@@ -106,6 +106,12 @@ final readonly class HttpResponseParser
             );
         }
 
+        if ($bestLength === null) {
+            throw new RuntimeException(
+                'Could not determine the length of the header body separator'
+            );
+        }
+
         return [
             'pos' => $bestPos,
             'length' => $bestLength,
@@ -115,7 +121,7 @@ final readonly class HttpResponseParser
     /**
      * Parses an array of HTTP header lines into a status array and a header array.
      *
-     * @param array $lines An array of strings representing the HTTP header lines.
+     * @param array<int, string> $lines An array of strings representing the HTTP header lines.
      *
      * @return array{0: array{version: string, code: int, reason: string}, 1: array<string, string>}
      *         Returns a two-element array where:
@@ -184,7 +190,8 @@ final readonly class HttpResponseParser
      *
      * @param string $statusLine The HTTP status line to be parsed.
      *
-     * @return array An associative array containing the parsed components:
+     * @return array{'version': string, 'code': int, 'reason': string} An associative array containing
+     *                  the parsed components:
      *               - 'version': string, the HTTP protocol version (e.g., "1.1").
      *               - 'code': int, the HTTP status code (e.g., 200).
      *               - 'reason': string, the reason phrase (e.g., "OK").
