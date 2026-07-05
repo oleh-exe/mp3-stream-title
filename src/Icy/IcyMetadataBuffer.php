@@ -76,6 +76,12 @@ final class IcyMetadataBuffer
      */
     public function buffer(): string
     {
+        if ($this->buffer === '') {
+            throw new LogicException(
+                'Buffer is empty'
+            );
+        }
+
         return $this->buffer;
     }
 
