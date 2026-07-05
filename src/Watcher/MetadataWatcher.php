@@ -45,7 +45,7 @@ final readonly class MetadataWatcher
     ) {
         if ($interval < 1) {
             throw new InvalidArgumentException(
-                'Interval must be greater than zero.'
+                'Interval must be greater than zero'
             );
         }
     }
