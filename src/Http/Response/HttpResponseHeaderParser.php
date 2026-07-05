@@ -31,7 +31,7 @@ final readonly class HttpResponseHeaderParser
     /**
      * Parses the HTTP response header into a structured HttpResponse object.
      *
-     * @param array $httpResponseHeader The raw HTTP response header lines.
+     * @param array<int, string> $httpResponseHeader The raw HTTP response header lines.
      *
      * @return HttpResponse A structured representation of the HTTP response, including protocol version, status code,
      * reason, headers, and an empty body.
@@ -53,9 +53,10 @@ final readonly class HttpResponseHeaderParser
     /**
      * Parses raw HTTP header lines into a structured status array and header array.
      *
-     * @param array $lines The raw HTTP header lines to be parsed.
+     * @param array<int, string> $lines The raw HTTP header lines to be parsed.
      *
-     * @return array An associative array containing two elements:
+     * @return array{0: array{'version': string, 'code': int, 'reason': string}, 1: array<string, string>}
+     *                 An associative array containing two elements:
      *               - The first element is an array with status information
      *                 (protocol version, status code, reason phrase).
      *               - The second element is an associative array of normalized header names
@@ -118,7 +119,7 @@ final readonly class HttpResponseHeaderParser
      *
      * @param string $statusLine The HTTP status line to parse.
      *
-     * @return array An associative array containing:
+     * @return array{'version': string, 'code': int, 'reason': string} An associative array containing:
      *               - 'version' (string): The protocol version (e.g., "1.1").
      *               - 'code' (int): The HTTP status code (e.g., 200).
      *               - 'reason' (string): The reason phrase (e.g., "OK").
