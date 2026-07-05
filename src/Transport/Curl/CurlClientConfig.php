@@ -91,10 +91,6 @@ final readonly class CurlClientConfig
             throw new InvalidArgumentException('Connection timeout must be greater than 0 seconds');
         }
 
-        if (!is_bool($followLocation)) {
-            throw new InvalidArgumentException('followLocation must be true or false');
-        }
-
         if ($maxRedirects < -1) {
             throw new InvalidArgumentException('maxRedirects must be greater than or equal to -1');
         }
