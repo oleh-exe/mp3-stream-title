@@ -17,6 +17,7 @@ reach the metadata block, and returns the currently playing title as a string.
 - Supports cURL, PHP streams, and socket-based transports.
 - Uses typed PHP 8.2 APIs, strict validation, and exceptions.
 - Parses ICY metadata through focused request, response, and metadata helpers.
+- Includes helpers for UTF-8 fallback conversion and HTML entity decoding.
 - Provides `MetadataWatcher` for polling a stream and yielding title changes.
 - Ships with Composer PSR-4 autoloading.
 
@@ -41,6 +42,9 @@ For development from a checkout, install dependencies first:
 ```bash
 composer install
 ```
+
+All examples below assume Composer autoloading is available through
+`vendor/autoload.php`.
 
 ## Usage
 
@@ -90,6 +94,28 @@ Available transports:
 - `StreamTransport::CURL`
 - `StreamTransport::STREAM`
 - `StreamTransport::SOCKET`
+
+## Metadata Encoding
+
+Some streams publish metadata in legacy encodings or with HTML entities. The
+library ships with small helpers that can be used when you need to normalize
+metadata values outside the main `fetchStreamTitle()` flow:
+
+```php
+<?php
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
+use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
+
+$converter = new FallbackEncodingConverter();
+$decoder = new HtmlEntityDecoder();
+
+$title = $decoder->decode(
+    $converter->convertToUtf8($rawTitle)
+);
+```
 
 ## Watching Title Changes
 
