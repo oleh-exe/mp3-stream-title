@@ -10,14 +10,18 @@
  * Note: This is example/demo code. Use at your own risk ("AS IS").
  */
 
-require_once dirname(__DIR__) . '/src/Mp3StreamTitle.php';
+declare(strict_types=1);
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use Mp3StreamTitle\Mp3StreamTitle;
 
 $client = new Mp3StreamTitle();
+$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/';
 
 try {
-    var_dump($client->fetchStreamTitle('https://cast1.torontocast.com:4450/stream/1/'));
-} catch (Throwable $e) {
-    var_dump($e->getMessage());
+    echo $client->fetchStreamTitle($streamUrl) . PHP_EOL;
+} catch (Throwable $exception) {
+    fwrite(STDERR, $exception->getMessage() . PHP_EOL);
+    exit(1);
 }
