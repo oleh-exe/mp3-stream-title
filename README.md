@@ -95,6 +95,11 @@ Available transports:
 - `StreamTransport::STREAM`
 - `StreamTransport::SOCKET`
 
+`FOLLOWLOCATION` support is available for `StreamTransport::CURL` and
+`StreamTransport::STREAM`. `StreamTransport::SOCKET` does not support
+`FOLLOWLOCATION` / follow-location behavior at the moment because this feature
+is not implemented for the socket transport.
+
 ## Metadata Encoding
 
 Some streams publish metadata in legacy encodings or with HTML entities. The
