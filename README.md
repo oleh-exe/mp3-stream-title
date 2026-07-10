@@ -1,7 +1,10 @@
-# MP3 Stream Title
+# 🎵 MP3 Stream Title
 
 ![PHP Version](https://img.shields.io/badge/php-%3E%3D8.2-777bb3.svg?logo=php&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache%202.0-green.svg)
+[![Packagist Version](https://img.shields.io/packagist/v/oleh-exe/mp3-stream-title.svg)](https://packagist.org/packages/oleh-exe/mp3-stream-title)
+[![Total Downloads](https://img.shields.io/packagist/dt/oleh-exe/mp3-stream-title.svg)](https://packagist.org/packages/oleh-exe/mp3-stream-title)
+
 [![Stand with Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua)
 [![Made in Ukraine](https://img.shields.io/badge/made_in-Ukraine-ffd700.svg?labelColor=0057b7)](https://stand-with-ukraine.pp.ua)
 
@@ -9,7 +12,7 @@ MP3 Stream Title is a small PHP library for reading the current `StreamTitle`
 metadata from Icecast and Shoutcast MP3 radio streams.
 
 It sends an ICY metadata request, reads only the part of the stream needed to
-reach the metadata block, and returns the currently playing title as a string.
+reach the metadata block, and returns the current StreamTitle metadata as a string.
 
 ## Features
 
@@ -25,11 +28,10 @@ reach the metadata block, and returns the currently playing title as a string.
 
 - PHP 8.2 or newer.
 - PHP cURL extension.
-- Composer is recommended for autoloading.
+- Composer.
 
 `composer.json` declares `ext-curl`, and the default transport is
-`StreamTransport::CURL`. The library also includes stream and socket transports,
-but Composer installs still require cURL unless package metadata is changed.
+`StreamTransport::CURL`. Although stream and socket transports are available, the package currently requires the PHP cURL extension.
 
 ## Installation
 
@@ -58,7 +60,7 @@ use Mp3StreamTitle\Mp3StreamTitle;
 $client = new Mp3StreamTitle();
 
 try {
-    echo $client->fetchStreamTitle('https://example.com/radio-stream');
+    echo $client->fetchStreamTitle('https://example.com/radio-stream'); // B.B. King - The Thrill Is Gone
 } catch (Throwable $exception) {
     echo $exception->getMessage();
 }
