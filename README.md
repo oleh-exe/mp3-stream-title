@@ -12,7 +12,7 @@ MP3 Stream Title is a small PHP library for reading the current `StreamTitle`
 metadata from Icecast and Shoutcast MP3 radio streams.
 
 It sends an ICY metadata request, reads only the part of the stream needed to
-reach the metadata block, and returns the current StreamTitle metadata as a string.
+reach the metadata block, and returns the current `StreamTitle` metadata as a string.
 
 ## Features
 
@@ -115,6 +115,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
+
+$rawTitle = 'Antonio PiÃ±ero - Mateo';
 
 $converter = new FallbackEncodingConverter();
 $decoder = new HtmlEntityDecoder();
