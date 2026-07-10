@@ -116,7 +116,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
 
-$rawTitle = 'Antonio PiÃ±ero - Mateo';
+$rawTitle = 'Antonio Pi�ero - Mateo';
 
 $converter = new FallbackEncodingConverter();
 $decoder = new HtmlEntityDecoder();
