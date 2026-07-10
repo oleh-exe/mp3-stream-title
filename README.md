@@ -122,6 +122,8 @@ $decoder = new HtmlEntityDecoder();
 $title = $decoder->decode(
     $converter->convertToUtf8($rawTitle)
 );
+
+echo $title; // Antonio Piñero - Mateo
 ```
 
 ## Watching Title Changes
