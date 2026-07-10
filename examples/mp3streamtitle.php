@@ -17,7 +17,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 use Mp3StreamTitle\Mp3StreamTitle;
 
 $client = new Mp3StreamTitle();
-$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/';
+$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/'; // Blues Never Die
 
 try {
     echo $client->fetchStreamTitle($streamUrl) . PHP_EOL;
