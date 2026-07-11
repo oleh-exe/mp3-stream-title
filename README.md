@@ -116,7 +116,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
 
-$rawTitle = 'Antonio Pi�ero - Mateo';
+// ISO-8859-1 encoded metadata received from the stream
+$rawTitle = hex2bin('416e746f6e696f205069f165726f202d204d6174656f');
 
 $converter = new FallbackEncodingConverter();
 $decoder = new HtmlEntityDecoder();
