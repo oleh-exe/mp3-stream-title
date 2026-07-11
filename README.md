@@ -106,7 +106,11 @@ is not implemented for the socket transport.
 
 Some streams publish metadata in legacy encodings or with HTML entities. The
 library ships with small helpers that can be used when you need to normalize
-metadata values outside the main `fetchStreamTitle()` flow:
+metadata values outside the main `fetchStreamTitle()` flow.
+
+The example below uses `hex2bin()` only to create reproducible sample bytes for
+the README. In real code, pass the raw metadata string you received from the
+stream:
 
 ```php
 <?php
@@ -116,7 +120,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
 
-// ISO-8859-1 encoded metadata received from the stream
+// Example input: raw bytes as they might arrive from an ISO-8859-1 stream.
 $rawTitle = hex2bin('416e746f6e696f205069f165726f202d204d6174656f');
 
 $converter = new FallbackEncodingConverter();
