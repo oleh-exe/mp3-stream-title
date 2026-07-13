@@ -120,7 +120,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
 
-// Example input: raw bytes as they might arrive from an ISO-8859-1 stream.
+// Example input: raw bytes as they might arrive from an ISO-8859-1 stream
 $rawTitle = hex2bin('416e746f6e696f205069f165726f202d204d6174656f');
 
 $converter = new FallbackEncodingConverter();
@@ -154,6 +154,26 @@ foreach ($watcher->watch('https://example.com/radio-stream') as $title) {
     echo $title . PHP_EOL;
 }
 ```
+
+## Experimental API
+
+The following APIs are considered experimental and may change or be removed in
+future versions without prior notice:
+
+- `Mp3StreamTitle\Encoding\FallbackEncodingConverter`
+    - The fallback encoding strategy and supported fallback encodings may evolve
+      as additional ICY metadata edge cases are identified.
+
+- `Mp3StreamTitle\Encoding\HtmlEntityDecoder`
+    - The entity decoding behavior and integration with metadata normalization
+      workflows may change based on real-world usage and feedback.
+
+- `Mp3StreamTitle\Watcher\MetadataWatcher`
+    - The metadata watching API, polling behavior, and iteration model may
+      change in future versions.
+
+These APIs are provided as optional helpers and are not considered part of the
+library's stable core functionality at this time.
 
 ## Upgrade Notes
 
