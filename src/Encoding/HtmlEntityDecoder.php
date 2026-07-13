@@ -25,6 +25,9 @@ namespace Mp3StreamTitle\Encoding;
  *
  * This class provides a method to decode HTML entities into their corresponding characters. It uses
  * specific flags and encoding to handle the transformation.
+ *
+ * @experimental This API is not yet considered stable. The decoding behavior
+ * and metadata normalization workflow may change in future versions.
  */
 final class HtmlEntityDecoder
 {
