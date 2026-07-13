@@ -26,6 +26,9 @@ use Mp3StreamTitle\Mp3StreamTitle;
 
 /**
  * Class responsible for monitoring metadata changes in an MP3 stream.
+ *
+ * @experimental This API is not yet considered stable. The watching,
+ * polling, and iteration behavior may change in future versions.
  */
 final readonly class MetadataWatcher
 {
