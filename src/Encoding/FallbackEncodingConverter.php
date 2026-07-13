@@ -27,6 +27,9 @@ use RuntimeException;
  * A class that provides functionality to convert a given string to UTF-8 encoding
  * using a list of fallback encodings. This is useful in scenarios where the
  * source encoding of the input string is unknown or unreliable.
+ *
+ * @experimental This API is not yet considered stable. The fallback encoding
+ * strategy and supported encodings may change in future versions.
  */
 final readonly class FallbackEncodingConverter
 {
