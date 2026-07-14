@@ -24,7 +24,7 @@ $client = new Mp3StreamTitle(
     )
 );
 
-$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/';
+$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/'; // Blues Never Die
 
 try {
     echo $client->fetchStreamTitle($streamUrl) . PHP_EOL;

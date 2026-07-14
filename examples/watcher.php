@@ -22,7 +22,7 @@ $watcher = new MetadataWatcher(
     interval: 10,
 );
 
-$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/';
+$streamUrl = 'https://cast1.torontocast.com:4450/stream/1/'; // Blues Never Die
 
 try {
     foreach ($watcher->watch($streamUrl) as $title) {
