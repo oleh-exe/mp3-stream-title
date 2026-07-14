@@ -76,9 +76,9 @@ The default transport is cURL. To choose another transport, pass an
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Config\StreamTransport;
-use Mp3StreamTitle\Mp3StreamTitle;
 
 $client = new Mp3StreamTitle(
     new Mp3StreamTitleConfig(
@@ -117,14 +117,14 @@ stream:
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
+use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
+
+$decoder = new HtmlEntityDecoder();
+$converter = new FallbackEncodingConverter();
 
 // Example input: raw bytes as they might arrive from an ISO-8859-1 stream
 $rawTitle = hex2bin('416e746f6e696f205069f165726f202d204d6174656f');
-
-$converter = new FallbackEncodingConverter();
-$decoder = new HtmlEntityDecoder();
 
 $title = $decoder->decode(
     $converter->convertToUtf8($rawTitle)

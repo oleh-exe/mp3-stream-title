@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
+use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 
 $decoder = new HtmlEntityDecoder();
 $converter = new FallbackEncodingConverter();
