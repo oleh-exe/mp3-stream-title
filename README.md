@@ -186,7 +186,6 @@ Version `1.0.0` is a PHP 8.2 rewrite and changes the public API.
   `$meta_max_length`.
 - Use Composer autoloading instead of requiring only `src/Mp3StreamTitle.php`.
 - Handle exceptions instead of checking for `0` or error strings.
-- `Radio101RuTitle.php` and `examples/radio101rutitle.php` were removed.
 
 ## Development
 

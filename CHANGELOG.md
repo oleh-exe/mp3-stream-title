@@ -16,7 +16,6 @@ No unreleased changes documented on `master`.
 - The public entry point changed from `sendRequest($streaming_url)` to `fetchStreamTitle(string $streamingUrl): string`.
 - Runtime options are now configured through `Mp3StreamTitleConfig` and `StreamTransport` instead of public mutable properties such as `$send_type`, `$user_agent`, `$show_errors`, and `$meta_max_length`.
 - The main library file moved from `Mp3StreamTitle.php` to `src/Mp3StreamTitle.php`. Projects that include the file directly must update the path.
-- The old `Radio101RuTitle.php` implementation and `examples/radio101rutitle.php` example were removed.
 
 ### Added
 
@@ -48,7 +47,6 @@ No unreleased changes documented on `master`.
 
 ### Removed
 
-- Removed the old `Radio101RuTitle.php` implementation and its example.
 - Removed the old public properties and transport-specific public methods: `sendRequest()`, `getSongInfo()`, `getOffset()`, `sendCurl()`, `sendSocket()`, and `sendFGC()`.
 
 ## [0.1.0] - 2020-04-05
