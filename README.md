@@ -153,8 +153,8 @@ try {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Watcher\MetadataWatcher;
+use Mp3StreamTitle\Mp3StreamTitle;
 
 $streamUrl = 'https://example.com/radio-stream';
 

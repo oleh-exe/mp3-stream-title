@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Watcher\MetadataWatcher;
+use Mp3StreamTitle\Mp3StreamTitle;
 
 $streamUrl = 'https://cast1.torontocast.com:4450/stream/1/'; // Blues Never Die
 
