@@ -83,7 +83,7 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl The URL of the streaming source to fetch the title from.
      *
-     * @return string The extracted stream title from the streaming metadata.
+     * @return string The current stream title, or an empty string when the stream does not provide metadata.
      *
      * @throws Throwable
      */
@@ -101,7 +101,7 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string The extracted stream title from the streaming metadata.
+     * @return string The current stream title, or an empty string when the stream does not provide metadata.
      *
      * @throws RuntimeException If the cURL extension is not available.
      * @throws Throwable
@@ -164,6 +164,10 @@ final class Mp3StreamTitle
         $metaInt = $metaIntResolver->resolve();
         $metadata = $icyMetadataExtractor->extract($icyMetadataBuffer->buffer(), $metaInt);
 
+        if ($metadata === '') {
+            return '';
+        }
+
         $streamTitleExtractor = new StreamTitleExtractor();
 
         return $streamTitleExtractor->extract($metadata);
@@ -174,7 +178,7 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string The extracted stream title from the streaming metadata.
+     * @return string The current stream title, or an empty string when the stream does not provide metadata.
      *
      * @throws Throwable
      */
@@ -226,6 +230,10 @@ final class Mp3StreamTitle
         $icyMetadataExtractor = new IcyMetadataExtractor();
         $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
 
+        if ($metadata === '') {
+            return '';
+        }
+
         $streamTitleExtractor = new StreamTitleExtractor();
 
         return $streamTitleExtractor->extract($metadata);
@@ -236,7 +244,7 @@ final class Mp3StreamTitle
      *
      * @param string $streamingUrl The URL of the streaming source to connect to.
      *
-     * @return string The extracted stream title from the streaming metadata.
+     * @return string The current stream title, or an empty string when the stream does not provide metadata.
      *
      * @throws Throwable
      */
@@ -277,6 +285,10 @@ final class Mp3StreamTitle
 
         $icyMetadataExtractor = new IcyMetadataExtractor();
         $metadata = $icyMetadataExtractor->extract($bodyBuffer, $offset);
+
+        if ($metadata === '') {
+            return '';
+        }
 
         $streamTitleExtractor = new StreamTitleExtractor();
 
