@@ -165,7 +165,7 @@ try {
     );
 
     foreach ($watcher->watch($streamUrl) as $title) {
-        echo $title . PHP_EOL;
+        echo '[' . date('H:i:s') . '] ' . $title . PHP_EOL;
     }
 } catch (Throwable $exception) {
     echo $exception->getMessage();
