@@ -43,7 +43,8 @@ final class IcyMetadataExtractor
      * @param string $bodyBuffer Full stream buffer (headers excluded).
      * @param int $offset The offset in bytes from stream start (icy-metaint).
      *
-     * @return string The extracted metadata string.
+     * @return string The extracted ICY metadata block. Returns an empty string
+     * if the stream does not contain metadata at the current metadata interval.
      *
      * @throws RuntimeException If the offset is out of bounds or the metadata block is incomplete.
      */
