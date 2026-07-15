@@ -18,15 +18,15 @@ use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Config\StreamTransport;
 
-$client = new Mp3StreamTitle(
-    new Mp3StreamTitleConfig(
-        streamTransport: StreamTransport::CURL,
-    )
-);
-
 $streamUrl = 'https://cast1.torontocast.com:4450/stream/1/'; // Blues Never Die
 
 try {
+    $client = new Mp3StreamTitle(
+        new Mp3StreamTitleConfig(
+            streamTransport: StreamTransport::CURL,
+        )
+    );
+
     echo $client->fetchStreamTitle($streamUrl) . PHP_EOL;
 } catch (Throwable $exception) {
     fwrite(STDERR, $exception->getMessage() . PHP_EOL);
