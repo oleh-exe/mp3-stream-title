@@ -59,8 +59,10 @@ use Mp3StreamTitle\Mp3StreamTitle;
 
 $client = new Mp3StreamTitle();
 
+$streamUrl = 'https://example.com/radio-stream';
+
 try {
-    echo $client->fetchStreamTitle('https://example.com/radio-stream'); // B.B. King - The Thrill Is Gone
+    echo $client->fetchStreamTitle($streamUrl); // B.B. King - The Thrill Is Gone
 } catch (Throwable $exception) {
     echo $exception->getMessage();
 }
@@ -80,15 +82,21 @@ use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Config\Mp3StreamTitleConfig;
 use Mp3StreamTitle\Config\StreamTransport;
 
-$client = new Mp3StreamTitle(
-    new Mp3StreamTitleConfig(
-        streamTransport: StreamTransport::SOCKET,
-        userAgent: 'MyRadioApp/1.0',
-        metaMaxLength: 4080,
-    )
-);
+$streamUrl = 'https://example.com/radio-stream';
 
-echo $client->fetchStreamTitle('https://example.com/radio-stream');
+try {
+    $client = new Mp3StreamTitle(
+        new Mp3StreamTitleConfig(
+            streamTransport: StreamTransport::SOCKET,
+            userAgent: 'MyRadioApp/1.0',
+            metaMaxLength: 4080,
+        )
+    );
+
+    echo $client->fetchStreamTitle($streamUrl);
+} catch (Throwable $exception) {
+    echo $exception->getMessage();
+}
 ```
 
 Available transports:
@@ -121,16 +129,19 @@ use Mp3StreamTitle\Encoding\HtmlEntityDecoder;
 use Mp3StreamTitle\Encoding\FallbackEncodingConverter;
 
 $decoder = new HtmlEntityDecoder();
-$converter = new FallbackEncodingConverter();
 
 // Example input: raw bytes as they might arrive from an ISO-8859-1 stream
 $rawTitle = hex2bin('416e746f6e696f205069f165726f202d204d6174656f');
 
-$title = $decoder->decode(
-    $converter->convertToUtf8($rawTitle)
-);
+try {
+    $converter = new FallbackEncodingConverter();
 
-echo $title; // Antonio Piñero - Mateo
+    echo $decoder->decode(
+        $converter->convertToUtf8($rawTitle)
+    ); // Antonio Piñero - Mateo
+} catch (Throwable $exception) {
+    echo $exception->getMessage();
+}
 ```
 
 ## Watching Title Changes
@@ -145,13 +156,19 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Mp3StreamTitle\Mp3StreamTitle;
 use Mp3StreamTitle\Watcher\MetadataWatcher;
 
-$watcher = new MetadataWatcher(
-    client: new Mp3StreamTitle(),
-    interval: 10,
-);
+$streamUrl = 'https://example.com/radio-stream';
 
-foreach ($watcher->watch('https://example.com/radio-stream') as $title) {
-    echo $title . PHP_EOL;
+try {
+    $watcher = new MetadataWatcher(
+        client: new Mp3StreamTitle(),
+        interval: 10, // In seconds
+    );
+
+    foreach ($watcher->watch($streamUrl) as $title) {
+        echo $title . PHP_EOL;
+    }
+} catch (Throwable $exception) {
+    echo $exception->getMessage();
 }
 ```
 
