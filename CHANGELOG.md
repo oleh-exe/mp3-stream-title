@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 No unreleased changes documented on `master`.
 
-## [1.0.0] - 2026-07-16
+## [1.0.0] - 2026-07-17
 
 ### Upgrade Notes
 
