@@ -31,3 +31,6 @@ Thumbs.db
 
 # PHPStan cache files
 /var/phpstan/
+
+# phpDocumentor files
+/build/
