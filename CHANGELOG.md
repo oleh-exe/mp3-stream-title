@@ -57,3 +57,7 @@ No unreleased changes documented on `master`.
 - Added support for fetching ICY stream metadata from online radio streams.
 - Added transport options using cURL, sockets, or `file_get_contents`.
 - Added basic example usage and Apache 2.0 licensing.
+
+[Unreleased]: https://github.com/oleh-exe/mp3-stream-title/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/oleh-exe/mp3-stream-title/compare/v0.1.0...v1.0.0
+[0.1.0]: https://github.com/oleh-exe/mp3-stream-title/releases/tag/v0.1.0
